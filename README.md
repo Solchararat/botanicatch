@@ -1,16 +1,80 @@
-# botanicatch
+# 🌿 BotaniCatch - Flutter App 📱
 
-A new Flutter project.
+Welcome to **BotaniCatch**, a mobile application developed using Flutter that allows users to explore, discover, and document native plants of the Philippines. 🌎🇵🇭
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📋 Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🏡 **Welcome Page** – Friendly greeting screen with a "Get Started" button
+- 🔐 **Sign In/Sign Up Pages** – User authentication placeholder
+- 🌱 **Home Page** – Displays user info and plants discovered
+- 📷 **Scan Plant** – Placeholder for scanning plant feature
+- 📘 **BotaniCatch** – Interactive list of native plants
+- 🗺️ **Map Page** – Placeholder map page
+- 👤 **User Profile** – Shows user info and unlocked achievements
+- ⚙️ **Settings Page** – Placeholder for app settings
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🧭 Navigation Flow
+
+- `WelcomePage` ➡️ SignInPage / SignUpPage ➡️ HomePage
+- HomePage uses `BottomNavigationBar` to navigate to:
+    - `/scan` - ScanPlantPage
+    - `/plantdex` - PlantDexPage
+    - `/map` - MapPage
+    - `/profile` - UserProfilePage
+
+---
+
+## 🌼 BotaniCatch Highlights
+
+- Displays a list of **50+ Philippine native plants**
+- Each plant card includes:
+    - 🌿 Name
+    - 🔬 Scientific Name
+    - 🏷️ Type (Ornamental, Medicinal, etc.)
+    - 📄 Description
+- Tapping a plant opens a modal with more details and an "Add to BotaniCatch" option
+
+---
+
+## 🏅 Achievements
+
+User profile includes fun achievement titles like:
+- 🌱 First Leaf
+- 🍃 Leaf Collector
+- 📖 BotaniCatch Apprentice
+- 🥗 Garden Gourmet
+- 🌸 Decorative Touch
+- 💊 The Apothecary
+
+---
+
+## 🎯 Goals
+
+- Help users learn about native flora 🌿
+- Encourage environmental awareness 🌏
+- Provide a gamified plant exploration experience 🎮
+
+---
+
+## 🚧 Future Enhancements
+
+- Integrate camera for plant scanning 📷
+- Add real geolocation mapping 🗺️
+- Sync user data with a backend 🔄
+- Improve UI/UX and add animations ✨
+
+---
+
+## 🛠 Tech Stack
+
+- Flutter (Dart) 💙
+- Material Design 🧱
+- Native Mobile App (Android/iOS) 📲
+
+---
+
+Crafted with ❤️ by Solchararat Team
