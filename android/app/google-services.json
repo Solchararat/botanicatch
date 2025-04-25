@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088611082530",
+    "project_id": "solchararat",
+    "storage_bucket": "solchararat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088611082530:android:283f156e256e6db032457b",
+        "android_client_info": {
+          "package_name": "com.example.botanicatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9eRLrO_5rwrloK_D8tKdi-dIwJi2_huk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
