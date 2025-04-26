@@ -8,14 +8,16 @@ class CustomTextFormField extends StatefulWidget {
   final Color? focusColor;
   final String? Function(String?) validator;
   final bool? obscureText;
+  final Widget? suffixIcon;
   const CustomTextFormField(
       {super.key,
       this.hintText,
       this.controller,
       this.obscureText,
+      this.suffixIcon,
       required this.validator,
-      this.fillColor = kGrayColor200,
-      this.focusColor = kGrayColor200});
+      this.fillColor = kGrayColorOpaque300,
+      this.focusColor = kGrayColorOpaque300});
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -55,10 +57,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 obscureText: widget.obscureText ?? false,
                 validator: widget.validator,
                 controller: widget.controller,
-                style: kSmallTextStyle.copyWith(color: kGrayColor200),
+                style: kSmallTextStyle,
                 cursorColor: kGreenColor300,
                 focusNode: _focusNode,
                 decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  suffixIcon: widget.suffixIcon,
                   filled: true,
                   fillColor: isFocus ? widget.focusColor : widget.fillColor,
                   hintText: widget.hintText,
