@@ -1,4 +1,5 @@
 import 'package:botanicatch/utils/constants.dart';
+import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
 import 'dart:developer';
@@ -11,19 +12,8 @@ class StartScreen extends StatelessWidget {
     log("Called");
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bg.png"),
-            fit: BoxFit.cover,
-            opacity: .85,
-          ),
-          borderRadius: BorderRadius.circular(35),
-          border: Border.all(
-            color: kGreenColor400,
-            width: 8,
-          ),
-        ),
+      body: BackgroundImage(
+        opacity: .85,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -35,6 +25,7 @@ class StartScreen extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * .80,
                 height: 50,
+                // TODO: Implement onPress feature
                 child: AuthButton(title: "START CATCHING", onPressed: () {}),
               ),
               Text(
