@@ -1,4 +1,4 @@
-import 'package:botanicatch/screens/auth/start_screen.dart';
+import 'package:botanicatch/screens/auth/authenticate.dart';
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
@@ -6,6 +6,6 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const StartScreen();
+    return const Authenticate();
   }
 }
