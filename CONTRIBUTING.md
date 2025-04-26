@@ -2,6 +2,9 @@
 
 This file serves as a centralized location for collaboration guidelines and standards. Contributors should review and follow the specified guidelines to ensure a smooth collaborative process. The following guidelines illustrate variable and class naming rules as well as details about the directory structure.
 
+## Flutter Version
+Ensure that you are using a Flutter version >= Flutter 3.27.0. Preferably, it is equal to 3.27.0 since newer Flutter versions can introduce breaking changes.
+
 ## Naming Conventions 🔠
 
 ### Variable Names
