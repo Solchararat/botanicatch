@@ -78,6 +78,9 @@ flutter:
     - family: OpenSans
       fonts:
         - asset: assets/fonts/OpenSans-VariableFont_wdth,wght.ttf
+    - family: Ampire
+      fonts:
+        - asset: assets/fonts/ampire.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
