@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 const kGreenColor100 = Color(0xFFB5ECB5);
 const kGreenColor200 = Color(0xFF37C779);
 const kGreenColor300 = Color(0xFF2AFE58);
+const kGreenColor400 = Color(0xFF3E8005);
+const kGreenColor500 = Color(0xFF384A36);
 
 // Gray color
 const kGrayColor100 = Color(0xFFCBC9C9);
