@@ -18,8 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-  late final ValueNotifier _isPasswordVisibleNotifier;
-  static final GlobalKey _formKey = GlobalKey();
+  late final ValueNotifier<bool> _isPasswordVisibleNotifier;
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _error = "";
   bool _isLoading = false;
@@ -103,12 +103,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: kGreenColor300),
                           )),
                     ),
-                    // TODO: Implement Forgot Password functionality
 
+                    // TODO: Implement Forgot Password functionality
                     // SizedBox was necessary to resize the button
                     SizedBox(
                       width: 120,
-                      child: AuthButton(title: "LOGIN", onPressed: () {}),
+                      child: AuthButton(
+                          title: "LOGIN",
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {}
+                          }),
                     ),
 
                     const SizedBox(height: 32),
