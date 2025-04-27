@@ -1,3 +1,4 @@
+import 'package:botanicatch/screens/auth/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:botanicatch/firebase_options.dart';
@@ -18,7 +19,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Wrapper(),
+      home: StartScreen(),
     );
   }
 }
