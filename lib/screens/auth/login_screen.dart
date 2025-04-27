@@ -2,6 +2,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
+import 'package:botanicatch/widgets/buttons/show_password_button.dart';
 import 'package:botanicatch/widgets/textformfields/custom_textformfield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -73,14 +74,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: "Email",
                     ),
                     const SizedBox(height: 16),
-                    CustomTextFormField(
-                      controller: _password,
-                      validator: (value) =>
-                          value == null || !value.isValidPassword
-                              ? "Invalid password"
-                              : null,
-                      hintText: "Password",
-                    ),
+                    ValueListenableBuilder(
+                        valueListenable: _isPasswordVisibleNotifier,
+                        builder: (context, isVisible, child) {
+                          return CustomTextFormField(
+                            controller: _password,
+                            validator: (value) =>
+                                value == null || !value.isValidPassword
+                                    ? "Invalid password."
+                                    : null,
+                            hintText: "Password",
+                            obscureText: !isVisible,
+                            suffixIcon: ShowPasswordButton(
+                              isVisible: isVisible,
+                              onToggle: () =>
+                                  _isPasswordVisibleNotifier.value = !isVisible,
+                            ),
+                          );
+                        }),
                     Align(
                       alignment: Alignment.centerRight,
                       // TODO: Implement Forgot Password functionality
