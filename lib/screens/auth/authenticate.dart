@@ -18,6 +18,6 @@ class _AuthenticateState extends State<Authenticate> {
   Widget build(BuildContext context) {
     return _showLoginScreen
         ? LoginScreen(toggleView: _toggleView)
-        : RegisterScreen();
+        : RegisterScreen(toggleView: _toggleView);
   }
 }
