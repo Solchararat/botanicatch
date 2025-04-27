@@ -12,7 +12,7 @@ class StartScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BackgroundImage(
-        opacity: .85,
+        opacity: .80,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
