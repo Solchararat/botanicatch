@@ -1,3 +1,6 @@
+import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
@@ -16,6 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static final AuthService _auth = AuthService();
+
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final ValueNotifier<bool> _isPasswordVisibleNotifier;
@@ -38,6 +43,24 @@ class _LoginScreenState extends State<LoginScreen> {
     _email.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+
+      var (AuthResultStatus status, UserModel? user) =
+          await _auth.signInWithEmailAndPassword(
+              email: _email.text.toLowerCase().trim(),
+              password: _password.text.trim());
+
+      if (status != AuthResultStatus.successful) {
+        setState(() {
+          _error = AuthExceptionHandler.generateExceptionMessage(status);
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -110,8 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 120,
                       child: AuthButton(
                           title: "LOGIN",
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                          onPressed: () async {
+                            await _login();
                           }),
                     ),
 

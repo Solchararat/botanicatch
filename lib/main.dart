@@ -1,8 +1,10 @@
+import 'package:botanicatch/models/user_model.dart';
 import 'package:botanicatch/screens/auth/start_screen.dart';
+import 'package:botanicatch/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:botanicatch/firebase_options.dart';
-import 'package:botanicatch/screens/wrapper.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +19,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: StartScreen(),
+    return MultiProvider(
+      providers: [
+        StreamProvider<UserModel?>.value(
+          initialData: null,
+          value: AuthService().user,
+        ),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: StartScreen(),
+      ),
     );
   }
 }
