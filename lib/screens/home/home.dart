@@ -1,4 +1,5 @@
 import 'package:botanicatch/utils/constants.dart';
+import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/services/auth_service.dart';
 import 'package:botanicatch/widgets/navbars/custom_bottom_navbar.dart';
@@ -34,25 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kGreenColor400,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "You are now logged in!",
-              style: kSmallTextStyle,
-            ),
-            TextButton(
-                onPressed: () {
-                  _auth.signOut();
-                },
-                child: Text(
-                  "Log Out",
-                  style: kSmallTextStyle.copyWith(color: kGreenColor300),
-                ))
-          ],
+      backgroundColor: Colors.transparent,
+      extendBody: true,
+      body: BackgroundImage(
+        imagePath: "assets/images/home_bg.jpg",
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "You are now logged in!",
+                style: kSmallTextStyle,
+              ),
+              TextButton(
+                  onPressed: () {
+                    _auth.signOut();
+                  },
+                  child: Text(
+                    "Log Out",
+                    style: kSmallTextStyle.copyWith(color: kGreenColor300),
+                  ))
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(

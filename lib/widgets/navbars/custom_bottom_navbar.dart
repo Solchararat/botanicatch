@@ -31,8 +31,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         bottom: Platform.isAndroid ? 16 : 0,
       ),
       child: BottomAppBar(
+        color: Colors.transparent,
         elevation: 0.0,
-        color: kGreenColor400,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: Container(
