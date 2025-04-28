@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class NavbarIconButton extends StatelessWidget {
   final int index;
   final IconData iconData;
+  final String label;
   final ValueNotifier<int> selectedIndexNotifier;
   final Function(int) onSelected;
 
@@ -11,6 +12,7 @@ class NavbarIconButton extends StatelessWidget {
     super.key,
     required this.index,
     required this.iconData,
+    required this.label,
     required this.selectedIndexNotifier,
     required this.onSelected,
   });
@@ -20,11 +22,21 @@ class NavbarIconButton extends StatelessWidget {
     return ValueListenableBuilder<int>(
       valueListenable: selectedIndexNotifier,
       builder: (context, selectedIndex, _) {
-        return IconButton(
-          onPressed: () => onSelected(index),
-          icon: Icon(
-            iconData,
-            color: selectedIndex == index ? kGreenColor300 : kGrayColor250,
+        final isSelected = selectedIndex == index;
+        return InkWell(
+          onTap: () => onSelected(index),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(iconData,
+                  color: isSelected ? kGreenColor300 : kGrayColor250),
+              Text(label,
+                  style: kXXSmallTextStyle.copyWith(
+                      color: isSelected ? kGreenColor300 : kGrayColor250,
+                      fontSize: 10))
+            ],
           ),
         );
       },

@@ -59,22 +59,30 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndexNotifier: _currentScreenIndex,
         onDestinationSelect: (int index) => _navigateOnPress(index),
       ),
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(top: 10),
-        height: 64,
-        width: 64,
-        child: FloatingActionButton(
-          onPressed: () {},
-          elevation: 0,
-          backgroundColor: kGreenColor300,
-          shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 5, color: kGreenColor500),
-              borderRadius: BorderRadius.circular(100)),
-          child: const Icon(
-            Icons.camera_alt,
-            color: Colors.white,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 50),
+            height: 64,
+            width: 64,
+            child: FloatingActionButton(
+              onPressed: () {},
+              elevation: 0,
+              backgroundColor: kGreenColor300,
+              shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 10, color: kGreenColor500),
+                  borderRadius: BorderRadius.circular(100)),
+              child: const Icon(
+                Icons.camera_alt_outlined,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
+          Text('Catch',
+              style: kXXSmallTextStyle.copyWith(
+                  fontSize: 11, color: kGrayColor250)),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

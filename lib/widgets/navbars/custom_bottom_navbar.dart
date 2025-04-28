@@ -24,9 +24,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width * 1,
       margin: EdgeInsets.only(
-        left: 16,
-        right: 16,
+        left: 8,
+        right: 8,
         bottom: Platform.isAndroid ? 16 : 0,
       ),
       child: BottomAppBar(
@@ -38,32 +39,44 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             height: 60,
             color: kGreenColor500,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                NavbarIconButton(
-                  index: 0,
-                  iconData: Icons.home,
-                  selectedIndexNotifier: widget.selectedIndexNotifier,
-                  onSelected: _selectNavigationItem,
+                Expanded(
+                  child: NavbarIconButton(
+                    index: 0,
+                    iconData: Icons.home,
+                    label: "Home",
+                    selectedIndexNotifier: widget.selectedIndexNotifier,
+                    onSelected: _selectNavigationItem,
+                  ),
                 ),
-                NavbarIconButton(
-                  index: 1,
-                  iconData: Icons.person,
-                  selectedIndexNotifier: widget.selectedIndexNotifier,
-                  onSelected: _selectNavigationItem,
+                Expanded(
+                  child: NavbarIconButton(
+                    index: 1,
+                    iconData: Icons.person,
+                    label: "Profile",
+                    selectedIndexNotifier: widget.selectedIndexNotifier,
+                    onSelected: _selectNavigationItem,
+                  ),
                 ),
-                const SizedBox(width: 20),
-                NavbarIconButton(
-                  index: 2,
-                  iconData: Icons.spa,
-                  selectedIndexNotifier: widget.selectedIndexNotifier,
-                  onSelected: _selectNavigationItem,
+                Expanded(child: SizedBox()),
+                Expanded(
+                  child: NavbarIconButton(
+                    index: 2,
+                    iconData: Icons.spa,
+                    label: "Garden",
+                    selectedIndexNotifier: widget.selectedIndexNotifier,
+                    onSelected: _selectNavigationItem,
+                  ),
                 ),
-                NavbarIconButton(
-                  index: 3,
-                  iconData: Icons.settings,
-                  selectedIndexNotifier: widget.selectedIndexNotifier,
-                  onSelected: _selectNavigationItem,
+                Expanded(
+                  child: NavbarIconButton(
+                    index: 3,
+                    iconData: Icons.settings,
+                    label: "Settings",
+                    selectedIndexNotifier: widget.selectedIndexNotifier,
+                    onSelected: _selectNavigationItem,
+                  ),
                 ),
               ],
             ),
