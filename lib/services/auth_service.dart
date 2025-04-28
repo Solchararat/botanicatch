@@ -32,6 +32,18 @@ class AuthService {
     }
   }
 
+  // Reset password
+  Future<AuthResultStatus> resetPassword({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      _status = AuthResultStatus.successful;
+    } catch (e) {
+      log("Exception @resetPassword: $e");
+      _status = AuthExceptionHandler.handleException(e);
+    }
+    return _status;
+  }
+
   // Register
   Future signUpWithEmailAndPassword({
     required String email,
