@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
@@ -134,9 +134,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: AuthButton(
                           title: "LOGIN",
                           onPressed: () async {
-                            await _login();
+                            _login();
                           }),
                     ),
+                    Text(_error, style: const TextStyle(color: Colors.red)),
 
                     const SizedBox(height: 32),
 

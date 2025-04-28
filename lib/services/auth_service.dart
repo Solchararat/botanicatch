@@ -8,9 +8,9 @@ class AuthService {
 
   factory AuthService() => _authService;
 
-  AuthService._internal();
-
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  AuthService._internal();
 
   late AuthResultStatus _status;
 
@@ -22,6 +22,17 @@ class AuthService {
       _auth.authStateChanges().map(_userFromFirebase);
   User? get currentUser => _auth.currentUser;
 
+  // Send verification email
+  Future sendVerificationEmail() async {
+    try {
+      await _auth.currentUser?.sendEmailVerification();
+    } catch (e) {
+      log("Exception @sendVerificationEmail: $e");
+      _status = AuthExceptionHandler.handleException(e);
+    }
+  }
+
+  // Register
   Future signUpWithEmailAndPassword({
     required String email,
     required String password,
@@ -46,7 +57,7 @@ class AuthService {
     return (_status, userModel);
   }
 
-  // Sign in
+  // login
   Future signInWithEmailAndPassword({
     required String email,
     required String password,
