@@ -28,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late final ValueNotifier<bool> _isConfirmPasswordVisibleNotifier;
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _error = "";
-  bool _loading = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _loading = true);
+      setState(() => _isLoading = true);
 
       var (AuthResultStatus status, UserModel? user) =
           await _auth.signUpWithEmailAndPassword(
@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (status != AuthResultStatus.successful) {
         setState(() {
           _error = AuthExceptionHandler.generateExceptionMessage(status);
-          _loading = false;
+          _isLoading = false;
         });
       }
     }
@@ -70,115 +70,123 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: BackgroundImage(
-        opacity: .75,
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 16,
-                children: [
-                  Image.asset("assets/images/logo.png"),
-                  Column(
-                    children: [
-                      Text("SIGNUP",
-                          style: kMediumTextStyle.copyWith(
-                              fontWeight: FontWeight.bold)),
-                      const Text("Please sign up to continue",
-                          style: kSmallTextStyle),
-                      const SizedBox(height: 16)
-                    ],
-                  ),
-                  // Email field
-                  CustomTextFormField(
-                    controller: _email,
-                    validator: (value) => value == null || !value.isValidEmail
-                        ? "Invalid email address."
-                        : null,
-                    hintText: "Email",
-                  ),
-                  // Password field
-                  ValueListenableBuilder(
-                      valueListenable: _isPasswordVisibleNotifier,
-                      builder: (context, isPasswordVisible, child) {
-                        return CustomTextFormField(
-                          controller: _password,
-                          validator: (value) => value == null ||
-                                  !value.isValidPassword
-                              ? "Password must contain:\n- At least 8 characters\n- One lowercase character\n- One uppercase character\n- One number\n- One special character"
-                              : null,
-                          hintText: "Password",
-                          obscureText: !isPasswordVisible,
-                          suffixIcon: ShowPasswordButton(
-                            isVisible: isPasswordVisible,
-                            onToggle: () => _isPasswordVisibleNotifier.value =
-                                !isPasswordVisible,
-                          ),
-                        );
-                      }),
-                  // Confirm Password field
-                  ValueListenableBuilder(
-                      valueListenable: _isConfirmPasswordVisibleNotifier,
-                      builder: (context, isConfirmPasswordVisible, child) {
-                        return CustomTextFormField(
-                          controller: _confirmPassword,
-                          validator: (value) =>
-                              value == null || value != _password.text
-                                  ? "Value doesn't match the password."
-                                  : null,
-                          hintText: "Confirm Password",
-                          obscureText: !isConfirmPasswordVisible,
-                          suffixIcon: ShowPasswordButton(
-                            isVisible: isConfirmPasswordVisible,
-                            onToggle: () => _isConfirmPasswordVisibleNotifier
-                                .value = !isConfirmPasswordVisible,
-                          ),
-                        );
-                      }),
-                  SizedBox(
-                      width: 120,
-                      child: AuthButton(
-                          title: "REGISTER",
-                          onPressed: () {
-                            _register();
-                          })),
-
-                  const SizedBox(height: 32),
-
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+            color: kGreenColor300,
+          ))
+        : Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: BackgroundImage(
+              opacity: .75,
+              child: Center(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 16,
                       children: [
-                        TextSpan(
-                            text: "Already have an account?\nPlease ",
-                            style: kXXSmallTextStyle.copyWith(
-                                color: kGreenColor300)),
-                        TextSpan(
-                            text: "Sign in",
-                            style: kXXSmallTextStyle,
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                widget.toggleView();
-                              }),
-                        TextSpan(
-                            text: " instead.",
-                            style: kXXSmallTextStyle.copyWith(
-                                color: kGreenColor300)),
+                        Image.asset("assets/images/logo.png"),
+                        Column(
+                          children: [
+                            Text("SIGNUP",
+                                style: kMediumTextStyle.copyWith(
+                                    fontWeight: FontWeight.bold)),
+                            const Text("Please sign up to continue",
+                                style: kSmallTextStyle),
+                            const SizedBox(height: 16)
+                          ],
+                        ),
+                        // Email field
+                        CustomTextFormField(
+                          controller: _email,
+                          validator: (value) =>
+                              value == null || !value.isValidEmail
+                                  ? "Invalid email address."
+                                  : null,
+                          hintText: "Email",
+                        ),
+                        // Password field
+                        ValueListenableBuilder(
+                            valueListenable: _isPasswordVisibleNotifier,
+                            builder: (context, isPasswordVisible, child) {
+                              return CustomTextFormField(
+                                controller: _password,
+                                validator: (value) => value == null ||
+                                        !value.isValidPassword
+                                    ? "Password must contain:\n- At least 8 characters\n- One lowercase character\n- One uppercase character\n- One number\n- One special character"
+                                    : null,
+                                hintText: "Password",
+                                obscureText: !isPasswordVisible,
+                                suffixIcon: ShowPasswordButton(
+                                  isVisible: isPasswordVisible,
+                                  onToggle: () => _isPasswordVisibleNotifier
+                                      .value = !isPasswordVisible,
+                                ),
+                              );
+                            }),
+                        // Confirm Password field
+                        ValueListenableBuilder(
+                            valueListenable: _isConfirmPasswordVisibleNotifier,
+                            builder:
+                                (context, isConfirmPasswordVisible, child) {
+                              return CustomTextFormField(
+                                controller: _confirmPassword,
+                                validator: (value) =>
+                                    value == null || value != _password.text
+                                        ? "Value doesn't match the password."
+                                        : null,
+                                hintText: "Confirm Password",
+                                obscureText: !isConfirmPasswordVisible,
+                                suffixIcon: ShowPasswordButton(
+                                  isVisible: isConfirmPasswordVisible,
+                                  onToggle: () =>
+                                      _isConfirmPasswordVisibleNotifier.value =
+                                          !isConfirmPasswordVisible,
+                                ),
+                              );
+                            }),
+                        SizedBox(
+                            width: 120,
+                            child: AuthButton(
+                                title: "REGISTER",
+                                onPressed: () {
+                                  _register();
+                                })),
+                        Text(_error, style: const TextStyle(color: Colors.red)),
+                        const SizedBox(height: 32),
+
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: "Already have an account?\nPlease ",
+                                  style: kXXSmallTextStyle.copyWith(
+                                      color: kGreenColor300)),
+                              TextSpan(
+                                  text: "Sign in",
+                                  style: kXXSmallTextStyle,
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      widget.toggleView();
+                                    }),
+                              TextSpan(
+                                  text: " instead.",
+                                  style: kXXSmallTextStyle.copyWith(
+                                      color: kGreenColor300)),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }
