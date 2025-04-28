@@ -21,11 +21,6 @@ class BackgroundImage extends StatelessWidget {
           fit: BoxFit.cover,
           opacity: opacity ?? 1,
         ),
-        borderRadius: BorderRadius.circular(35),
-        border: Border.all(
-          color: kGreenColor400,
-          width: 8,
-        ),
       ),
       child: child,
     );
