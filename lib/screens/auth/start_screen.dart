@@ -20,7 +20,11 @@ class StartScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 16,
             children: [
-              Image.asset("assets/images/logo.png"),
+              Image.asset(
+                "assets/images/logo.png",
+                cacheWidth: 600,
+                cacheHeight: 150,
+              ),
               // SizedBox was necessary to resize the TextButton
               SizedBox(
                 width: MediaQuery.of(context).size.width * .80,

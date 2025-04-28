@@ -90,7 +90,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 16,
                       children: [
-                        Image.asset("assets/images/logo.png"),
+                        Image.asset(
+                          "assets/images/logo.png",
+                          cacheWidth: 600,
+                          cacheHeight: 150,
+                        ),
                         Column(
                           children: [
                             Text("SIGNUP",
