@@ -42,20 +42,41 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "You are now logged in!",
-                style: kSmallTextStyle,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset(
+                    "assets/images/logo-small.png",
+                    cacheWidth: 190,
+                    cacheHeight: 100,
+                  ),
+                  Image.asset("assets/images/user.png")
+                ],
               ),
-              TextButton(
-                  onPressed: () {
-                    _auth.signOut();
-                  },
-                  child: Text(
-                    "Log Out",
-                    style: kSmallTextStyle.copyWith(color: kGreenColor300),
-                  ))
+              Text("Hi Guest!",
+                  style: kLargeTextStyle.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left),
+              Text("Anything New?",
+                  style: kSmallTextStyle.copyWith(color: kGrayColor250),
+                  textAlign: TextAlign.left),
+              Column(
+                children: [
+                  Text(
+                    "You are now logged in!",
+                    style: kSmallTextStyle,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        _auth.signOut();
+                      },
+                      child: Text(
+                        "Log Out",
+                        style: kSmallTextStyle.copyWith(color: kGreenColor300),
+                      ))
+                ],
+              ),
             ],
           ),
         ),
