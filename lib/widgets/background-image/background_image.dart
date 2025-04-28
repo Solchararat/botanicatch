@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:botanicatch/utils/constants.dart';
 
 class BackgroundImage extends StatelessWidget {
   final Widget child;
@@ -15,6 +14,7 @@ class BackgroundImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(imagePath),
