@@ -78,6 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             body: BackgroundImage(
+              imagePath: "assets/images/bg.png",
               opacity: .75,
               child: Center(
                 child: Form(

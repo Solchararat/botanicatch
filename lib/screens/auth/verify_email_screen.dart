@@ -45,6 +45,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BackgroundImage(
+        imagePath: "assets/images/bg.png",
         opacity: .80,
         child: Center(
           child: Padding(

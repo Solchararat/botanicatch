@@ -52,6 +52,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: BackgroundImage(
+        imagePath: "assets/images/bg.png",
         opacity: .80,
         child: Center(
           child: Form(

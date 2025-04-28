@@ -4,14 +4,20 @@ import 'package:botanicatch/utils/constants.dart';
 class BackgroundImage extends StatelessWidget {
   final Widget child;
   final double? opacity;
-  const BackgroundImage({super.key, required this.child, this.opacity});
+  final String imagePath;
+  const BackgroundImage({
+    super.key,
+    required this.child,
+    required this.imagePath,
+    this.opacity,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: const AssetImage("assets/images/bg.png"),
+          image: AssetImage(imagePath),
           fit: BoxFit.cover,
           opacity: opacity ?? 1,
         ),

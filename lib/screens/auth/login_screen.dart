@@ -74,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             body: BackgroundImage(
+                imagePath: "assets/images/bg.png",
                 opacity: .75,
                 child: Center(
                   child: Form(
