@@ -1,3 +1,6 @@
+import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
 import 'package:botanicatch/widgets/buttons/show_password_button.dart';
 import 'package:flutter/gestures.dart';
@@ -16,6 +19,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  static final AuthService _auth = AuthService();
+
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final TextEditingController _confirmPassword;
@@ -43,6 +48,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _password.dispose();
     _confirmPassword.dispose();
     super.dispose();
+  }
+
+  void _register() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _loading = true);
+
+      var (AuthResultStatus status, UserModel? user) =
+          await _auth.signUpWithEmailAndPassword(
+              email: _email.text.toLowerCase().trim(),
+              password: _password.text.trim());
+
+      if (status != AuthResultStatus.successful) {
+        setState(() {
+          _error = AuthExceptionHandler.generateExceptionMessage(status);
+          _loading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -118,13 +141,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         );
                       }),
-                  // TODO: Add register functionality
                   SizedBox(
                       width: 120,
                       child: AuthButton(
                           title: "REGISTER",
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                            _register();
                           })),
 
                   const SizedBox(height: 32),
