@@ -49,6 +49,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: BackgroundImage(
         opacity: .80,
@@ -70,23 +71,36 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       Text("RESET PASSWORD",
                           style: kMediumTextStyle.copyWith(
                               fontWeight: FontWeight.bold)),
-                      const Text(
-                          "Please enter your email address to reset your password.",
-                          style: kSmallTextStyle),
+                      SizedBox(
+                        width: 300,
+                        child: const Text(
+                          "Please enter your registered email address to reset your password.",
+                          style: kXXSmallTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                       const SizedBox(height: 16),
                     ],
                   ),
-                  Form(
-                    key: _formKey,
-                    child: CustomTextFormField(
-                      validator: (value) => value == null || !value.isValidEmail
-                          ? "Invalid email address."
-                          : null,
-                      hintText: "Email",
-                    ),
+                  CustomTextFormField(
+                    controller: _email,
+                    validator: (value) => value == null || !value.isValidEmail
+                        ? "Invalid email address."
+                        : null,
+                    hintText: "Email",
                   ),
-                  AuthButton(
-                      title: "Next", onPressed: () => _resetPassword(context))
+                  SizedBox(
+                    width: 120,
+                    child: AuthButton(
+                        title: "Next",
+                        onPressed: () => _resetPassword(context)),
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    "Note: You should use the email you used to register for this app to receive the reset password email.",
+                    style: kXXSmallTextStyle.copyWith(color: kGreenColor300),
+                    textAlign: TextAlign.center,
+                  )
                 ],
               ),
             ),
