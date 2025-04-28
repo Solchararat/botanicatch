@@ -1,4 +1,5 @@
 import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/screens/auth/reset_password_screen.dart';
 import 'package:botanicatch/services/auth_service.dart';
 import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/utils/constants.dart';
@@ -65,109 +66,120 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: BackgroundImage(
-          opacity: .75,
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/logo.png"),
-                    Column(
-                      children: [
-                        Text("LOGIN",
-                            style: kMediumTextStyle.copyWith(
-                                fontWeight: FontWeight.bold)),
-                        const Text("Please sign in to continue",
-                            style: kSmallTextStyle),
-                        const SizedBox(height: 16)
-                      ],
-                    ),
-                    CustomTextFormField(
-                      controller: _email,
-                      validator: (value) => value == null || !value.isValidEmail
-                          ? "Invalid email address"
-                          : null,
-                      hintText: "Email",
-                    ),
-                    const SizedBox(height: 16),
-                    ValueListenableBuilder(
-                        valueListenable: _isPasswordVisibleNotifier,
-                        builder: (context, isVisible, child) {
-                          return CustomTextFormField(
-                            controller: _password,
-                            validator: (value) =>
-                                value == null || !value.isValidPassword
-                                    ? "Invalid password."
-                                    : null,
-                            hintText: "Password",
-                            obscureText: !isVisible,
-                            suffixIcon: ShowPasswordButton(
-                              isVisible: isVisible,
-                              onToggle: () =>
-                                  _isPasswordVisibleNotifier.value = !isVisible,
-                            ),
-                          );
-                        }),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      // TODO: Implement Forgot Password functionality
-                      child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Forgot Password?",
-                            style: kXXSmallTextStyle.copyWith(
-                                color: kGreenColor300),
-                          )),
-                    ),
-
-                    // TODO: Implement Forgot Password functionality
-                    // SizedBox was necessary to resize the button
-                    SizedBox(
-                      width: 120,
-                      child: AuthButton(
-                          title: "LOGIN",
-                          onPressed: () async {
-                            _login();
-                          }),
-                    ),
-                    Text(_error, style: const TextStyle(color: Colors.red)),
-
-                    const SizedBox(height: 32),
-
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+            color: kGreenColor300,
+          ))
+        : Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: BackgroundImage(
+                opacity: .75,
+                child: Center(
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          TextSpan(
-                              text: "Don't have an account? Please ",
-                              style: kXXSmallTextStyle.copyWith(
-                                  color: kGreenColor300)),
-                          TextSpan(
-                              text: "Sign up",
-                              style: kXXSmallTextStyle,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  widget.toggleView();
+                          Image.asset("assets/images/logo.png"),
+                          Column(
+                            children: [
+                              Text("LOGIN",
+                                  style: kMediumTextStyle.copyWith(
+                                      fontWeight: FontWeight.bold)),
+                              const Text("Please sign in to continue",
+                                  style: kSmallTextStyle),
+                              const SizedBox(height: 16)
+                            ],
+                          ),
+                          CustomTextFormField(
+                            controller: _email,
+                            validator: (value) =>
+                                value == null || !value.isValidEmail
+                                    ? "Invalid email address"
+                                    : null,
+                            hintText: "Email",
+                          ),
+                          const SizedBox(height: 16),
+                          ValueListenableBuilder(
+                              valueListenable: _isPasswordVisibleNotifier,
+                              builder: (context, isVisible, child) {
+                                return CustomTextFormField(
+                                  controller: _password,
+                                  validator: (value) =>
+                                      value == null || !value.isValidPassword
+                                          ? "Invalid password."
+                                          : null,
+                                  hintText: "Password",
+                                  obscureText: !isVisible,
+                                  suffixIcon: ShowPasswordButton(
+                                    isVisible: isVisible,
+                                    onToggle: () => _isPasswordVisibleNotifier
+                                        .value = !isVisible,
+                                  ),
+                                );
+                              }),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ResetPasswordScreen()));
+                                },
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: kXXSmallTextStyle.copyWith(
+                                      color: kGreenColor300),
+                                )),
+                          ),
+
+                          // SizedBox was necessary to resize the button
+                          SizedBox(
+                            width: 120,
+                            child: AuthButton(
+                                title: "LOGIN",
+                                onPressed: () async {
+                                  _login();
                                 }),
-                          TextSpan(
-                              text: " first.",
-                              style: kXXSmallTextStyle.copyWith(
-                                  color: kGreenColor300)),
+                          ),
+                          Text(_error,
+                              style: const TextStyle(color: Colors.red)),
+
+                          const SizedBox(height: 32),
+
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                    text: "Don't have an account? Please ",
+                                    style: kXXSmallTextStyle.copyWith(
+                                        color: kGreenColor300)),
+                                TextSpan(
+                                    text: "Sign up",
+                                    style: kXXSmallTextStyle,
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.toggleView();
+                                      }),
+                                TextSpan(
+                                    text: " first.",
+                                    style: kXXSmallTextStyle.copyWith(
+                                        color: kGreenColor300)),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          )),
-    );
+                  ),
+                )),
+          );
   }
 }
