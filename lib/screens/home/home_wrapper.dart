@@ -1,4 +1,5 @@
 import 'package:botanicatch/screens/home/home_screen.dart';
+import 'package:botanicatch/screens/home/profile_screen.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
@@ -18,6 +19,13 @@ class HomeWrapper extends StatefulWidget {
 
 class _HomeWrapperState extends State<HomeWrapper> {
   late final ValueNotifier<int> _currentScreenIndex;
+
+  static const List<Widget> _screens = [
+    HomeScreen(),
+    ProfileScreen(),
+    ProfileScreen(),
+    ProfileScreen(),
+  ];
 
   void _navigateOnPress(int index) {
     _currentScreenIndex.value = index;
@@ -40,7 +48,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
-      body: HomeScreen(),
+      body: ValueListenableBuilder(
+          valueListenable: _currentScreenIndex,
+          builder: (context, index, _) => _screens[index]),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndexNotifier: _currentScreenIndex,
         onDestinationSelect: (int index) => _navigateOnPress(index),
