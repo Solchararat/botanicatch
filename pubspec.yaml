@@ -38,6 +38,7 @@ dependencies:
   email_validator: ^3.0.0
   firebase_auth: ^5.5.2
   provider: ^6.1.4
+  cloudinary_url_gen: ^1.7.0
 
 dev_dependencies:
   flutter_test:
