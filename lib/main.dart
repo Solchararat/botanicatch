@@ -23,7 +23,7 @@ class App extends StatelessWidget {
       providers: [
         StreamProvider<UserModel?>.value(
           initialData: null,
-          value: AuthService().user,
+          value: AuthService.instance.user,
         ),
       ],
       child: const MaterialApp(

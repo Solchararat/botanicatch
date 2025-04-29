@@ -17,7 +17,7 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
   late final Timer _timer;
 
   @override

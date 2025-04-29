@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
 
   @override
   Widget build(BuildContext context) {

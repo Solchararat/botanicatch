@@ -18,7 +18,7 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   late final TextEditingController _email;
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
 
   @override
   void initState() {

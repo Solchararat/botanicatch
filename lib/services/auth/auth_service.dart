@@ -4,14 +4,10 @@ import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  static final AuthService _authService = AuthService._internal();
-
-  factory AuthService() => _authService;
-
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-
   AuthService._internal();
-
+  static AuthService? _instance;
+  static AuthService get instance => _instance ??= AuthService._internal();
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
   late AuthResultStatus _status;
 
   UserModel? _userFromFirebase(User? user) =>
@@ -63,7 +59,7 @@ class AuthService {
         _status = AuthResultStatus.undefined;
       }
     } catch (e) {
-      log("Exception @signInWithEmailAndPassword: $e");
+      log("Exception @signUpWithEmailAndPassword: $e");
       _status = AuthExceptionHandler.handleException(e);
     }
     return (_status, userModel);

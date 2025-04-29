@@ -19,7 +19,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
 
   late final TextEditingController _email;
   late final TextEditingController _password;

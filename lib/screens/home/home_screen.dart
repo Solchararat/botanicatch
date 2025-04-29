@@ -8,7 +8,7 @@ import 'package:botanicatch/utils/constants.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
 
   @override
   Widget build(BuildContext context) {

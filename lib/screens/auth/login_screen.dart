@@ -20,7 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService.instance;
 
   late final TextEditingController _email;
   late final TextEditingController _password;
