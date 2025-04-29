@@ -2,7 +2,7 @@ import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/screens/wrapper.dart';
-import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';

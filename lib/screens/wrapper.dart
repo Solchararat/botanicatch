@@ -1,7 +1,7 @@
 import 'package:botanicatch/screens/auth/authenticate.dart';
 import 'package:botanicatch/screens/auth/verify_email_screen.dart';
 import 'package:botanicatch/screens/home/home_wrapper.dart';
-import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:flutter/material.dart';
 

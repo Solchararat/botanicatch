@@ -1,4 +1,4 @@
-import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/widgets/buttons/plant_action_button.dart';
 import 'package:botanicatch/widgets/buttons/plant_stats_button.dart';
 import 'package:botanicatch/widgets/grids/plant_action_grid.dart';

@@ -1,5 +1,5 @@
 import 'package:botanicatch/models/user_model.dart';
-import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
 import 'package:botanicatch/widgets/buttons/show_password_button.dart';

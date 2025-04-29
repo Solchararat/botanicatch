@@ -1,6 +1,6 @@
 import 'package:botanicatch/models/user_model.dart';
 import 'package:botanicatch/screens/auth/reset_password_screen.dart';
-import 'package:botanicatch/services/auth_service.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
