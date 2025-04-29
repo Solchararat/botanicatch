@@ -5,14 +5,12 @@ class PlantActionGrid extends StatelessWidget {
   final Widget topRightWidget;
   final Widget bottomLeftWidget;
   final Widget bottomRightWidget;
-
-  const PlantActionGrid({
-    super.key,
-    required this.topLeftWidget,
-    required this.topRightWidget,
-    required this.bottomLeftWidget,
-    required this.bottomRightWidget,
-  });
+  const PlantActionGrid(
+      {super.key,
+      required this.topLeftWidget,
+      required this.topRightWidget,
+      required this.bottomLeftWidget,
+      required this.bottomRightWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +18,13 @@ class PlantActionGrid extends StatelessWidget {
       spacing: 16,
       children: [
         Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [topLeftWidget, topRightWidget]),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [topLeftWidget, topRightWidget],
+        ),
         Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [bottomLeftWidget, bottomRightWidget]),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [bottomLeftWidget, bottomRightWidget],
+        )
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
 import 'package:botanicatch/widgets/buttons/plant_action_button.dart';
+import 'package:botanicatch/widgets/buttons/plant_stats_button.dart';
 import 'package:botanicatch/widgets/grids/plant_action_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/services/auth_service.dart';
@@ -126,6 +127,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     cacheHeight: 110,
                   ),
                 ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    PlantStatsButton(
+                      // TODO: Implement onTap feature
+                      onTap: () {},
+                      heading: "You found:",
+                      subheading: "30 new plants this month",
+                      imagePath: "assets/images/found-plant.png",
+                      cacheWidth: 108,
+                      cacheHeight: 127,
+                      right: -10,
+                      bottom: -20,
+                    ),
+                    PlantStatsButton(
+                      // TODO: Implement onTap feature
+                      onTap: () {},
+                      heading: "Diagnose",
+                      subheading: "Check your plant's health",
+                      imagePath: "assets/images/diagnose-plant.png",
+                      cacheWidth: 153,
+                      cacheHeight: 140,
+                      right: -10,
+                      bottom: -30,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,

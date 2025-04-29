@@ -17,6 +17,7 @@ const kGrayColor150 = Color(0xFFC4C4C4); // TextFormField color w/ opacity
 const kGrayColor200 = Color(0xFFB5BAB6); // TextFormField hintText color
 const kGrayColor250 = Color(0xFFBCBCBC); // home screen, icon and font color
 const kGrayColor300 = Color(0xFFC4C4C4);
+const kGrayColor400 = Color(0xFF878787);
 const kGrayColorOpaque300 = Color(0x59C4C4C4);
 
 // Blue color
