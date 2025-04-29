@@ -1,13 +1,7 @@
 import 'package:botanicatch/screens/home/home_screen.dart';
 import 'package:botanicatch/screens/home/profile_screen.dart';
-import 'package:botanicatch/utils/constants.dart';
-import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
-import 'package:botanicatch/widgets/buttons/plant_action_button.dart';
-import 'package:botanicatch/widgets/buttons/plant_stats_button.dart';
-import 'package:botanicatch/widgets/grids/plant_action_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:botanicatch/services/auth_service.dart';
 import 'package:botanicatch/widgets/navbars/custom_bottom_navbar.dart';
 
 class HomeWrapper extends StatefulWidget {
