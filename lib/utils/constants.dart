@@ -19,6 +19,10 @@ const kGrayColor250 = Color(0xFFBCBCBC); // home screen, icon and font color
 const kGrayColor300 = Color(0xFFC4C4C4);
 const kGrayColorOpaque300 = Color(0x59C4C4C4);
 
+// Blue color
+const kBlueColor100 = Color(0xFF24D6FD);
+const kBlueColor200 = Color(0xFF016590);
+
 // Text Style
 const kLargeTextStyle = TextStyle(
   fontFamily: 'OpenSans',
