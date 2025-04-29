@@ -24,6 +24,7 @@ class NavbarIconButton extends StatelessWidget {
       builder: (context, selectedIndex, _) {
         final isSelected = selectedIndex == index;
         return InkWell(
+          borderRadius: BorderRadius.circular(100),
           onTap: () => onSelected(index),
           child: Column(
             mainAxisSize: MainAxisSize.min,
