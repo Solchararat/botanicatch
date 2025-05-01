@@ -67,8 +67,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 const ProfileSectionTitle(title: "Last Activities"),
 
-                Column(
-                  spacing: 16,
+                ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
                   children: _fetchLastActivities(),
                 ),
               ],
