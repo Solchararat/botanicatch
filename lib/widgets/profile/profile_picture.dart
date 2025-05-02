@@ -1,12 +1,14 @@
 import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/services/storage/storage_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:botanicatch/utils/constants.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:developer';
 
 class ProfilePicture extends StatefulWidget {
-  const ProfilePicture({super.key});
+  final bool isEditable;
+  const ProfilePicture({super.key, this.isEditable = false});
 
   @override
   State<ProfilePicture> createState() => _ProfilePictureState();
@@ -53,36 +55,97 @@ class _ProfilePictureState extends State<ProfilePicture> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _onProfileTapped,
-      child: ValueListenableBuilder(
-          valueListenable: _imageNotifier,
-          builder: (_, imageBytes, __) {
-            return Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                shape: BoxShape.circle,
-                image: imageBytes != null
-                    ? DecorationImage(
-                        // cacheHeight and cacheWidth match the Container's dimensions
-                        image: Image.memory(
-                          imageBytes,
-                          fit: BoxFit.cover,
-                        ).image,
-                        fit: BoxFit.cover)
-                    : null,
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.person_rounded,
-                  color: Colors.black38,
-                  size: 25,
+    return widget.isEditable
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: _onProfileTapped,
+                child: ValueListenableBuilder(
+                  valueListenable: _imageNotifier,
+                  builder: (_, imageBytes, __) {
+                    return Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: imageBytes != null
+                            ? Colors.black
+                            : Colors.grey[300],
+                        shape: BoxShape.circle,
+                        image: imageBytes != null
+                            ? DecorationImage(
+                                opacity: .5,
+                                image: Image.memory(
+                                  imageBytes,
+                                  fit: BoxFit.cover,
+                                ).image,
+                                fit: BoxFit.cover)
+                            : null,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.camera_alt_outlined,
+                          color: imageBytes != null
+                              ? Colors.white
+                              : Colors.black38,
+                          size: 25,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
-            );
-          }),
-    );
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text(
+                      "Tap on the profile picture to change it",
+                      style: kXXSmallTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                      softWrap: true,
+                    ),
+                    Text(
+                      "Recommended: Square image, at least 400x400 pixels",
+                      style: kXXSmallTextStyle.copyWith(
+                          fontSize: 11, color: Colors.grey[300]),
+                      softWrap: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : ValueListenableBuilder(
+            valueListenable: _imageNotifier,
+            builder: (_, imageBytes, __) {
+              return Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: kGreenColor500, width: 3),
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
+                    image: imageBytes != null
+                        ? DecorationImage(
+                            image: Image.memory(
+                              imageBytes,
+                              fit: BoxFit.cover,
+                            ).image,
+                            fit: BoxFit.cover)
+                        : null,
+                  ),
+                  child: imageBytes == null
+                      ? const Center(
+                          child: Icon(
+                            Icons.person_rounded,
+                            color: Colors.black38,
+                            size: 25,
+                          ),
+                        )
+                      : null);
+            });
   }
 }
