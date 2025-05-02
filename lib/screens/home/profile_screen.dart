@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/modals/edit_profile_modal.dart';
@@ -16,9 +18,21 @@ class ProfileScreen extends StatefulWidget {
 // TODO: Show modal to edit name and profile picture on tap of the edit button
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late final ValueNotifier<Uint8List?> _profileImgBytes;
+  late final ValueNotifier<Uint8List?> _bannerImgBytes;
+
   @override
   void initState() {
     super.initState();
+    _profileImgBytes = ValueNotifier(null);
+    _bannerImgBytes = ValueNotifier(null);
+  }
+
+  @override
+  void dispose() {
+    _profileImgBytes.dispose();
+    _bannerImgBytes.dispose();
+    super.dispose();
   }
 
   // mock function for generating last activities
@@ -44,7 +58,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 16,
               children: [
-                const ProfileHeader(),
+                ProfileHeader(
+                  profileImgBytes: _profileImgBytes,
+                  bannerImgBytes: _bannerImgBytes,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -62,7 +79,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onTap: () {
                         showDialog(
                             context: context,
-                            builder: (context) => const EditProfileModal());
+                            builder: (context) => EditProfileModal(
+                                  profileImgBytes: _profileImgBytes,
+                                  bannerImgBytes: _bannerImgBytes,
+                                ));
                       },
                       child: const Icon(
                         Icons.edit,

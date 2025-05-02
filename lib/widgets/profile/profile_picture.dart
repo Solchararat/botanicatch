@@ -8,7 +8,10 @@ import 'dart:developer';
 
 class ProfilePicture extends StatefulWidget {
   final bool isEditable;
-  const ProfilePicture({super.key, this.isEditable = false});
+  final ValueNotifier<Uint8List?> profileImgBytes;
+
+  const ProfilePicture(
+      {super.key, required this.profileImgBytes, this.isEditable = false});
 
   @override
   State<ProfilePicture> createState() => _ProfilePictureState();
@@ -19,13 +22,18 @@ class _ProfilePictureState extends State<ProfilePicture> {
   final StorageService _storage = StorageService.instance;
   final ImagePicker _picker = ImagePicker();
   final String _filePath = "users/$_uid/profile-picture/profile.jpg";
-  late final ValueNotifier<Uint8List?> _imageNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _getProfilePicture();
+  }
 
   Future<void> _onProfileTapped() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
     final imageBytes = await image.readAsBytes();
-    _imageNotifier.value = imageBytes;
+    widget.profileImgBytes.value = imageBytes;
 
     await _storage.uploadFile(_filePath, image);
   }
@@ -33,24 +41,11 @@ class _ProfilePictureState extends State<ProfilePicture> {
   Future<void> _getProfilePicture() async {
     try {
       final imageBytes = await _storage.getFile(_filePath);
-      _imageNotifier.value = imageBytes;
+      widget.profileImgBytes.value = imageBytes;
       if (imageBytes == null) return;
     } catch (e) {
       log("Profile picture not uploaded yet.");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _imageNotifier = ValueNotifier(null);
-    _getProfilePicture();
-  }
-
-  @override
-  void dispose() {
-    _imageNotifier.dispose();
-    super.dispose();
   }
 
   @override
@@ -62,7 +57,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
               GestureDetector(
                 onTap: _onProfileTapped,
                 child: ValueListenableBuilder(
-                  valueListenable: _imageNotifier,
+                  valueListenable: widget.profileImgBytes,
                   builder: (_, imageBytes, __) {
                     return Container(
                       height: 100,
@@ -119,7 +114,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
             ],
           )
         : ValueListenableBuilder(
-            valueListenable: _imageNotifier,
+            valueListenable: widget.profileImgBytes,
             builder: (_, imageBytes, __) {
               return Container(
                   height: 100,

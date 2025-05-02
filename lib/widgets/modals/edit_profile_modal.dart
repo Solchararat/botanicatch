@@ -1,10 +1,15 @@
+import "dart:typed_data";
+
 import "package:botanicatch/utils/constants.dart";
 import "package:botanicatch/widgets/profile/profile_banner.dart";
 import "package:botanicatch/widgets/profile/profile_picture.dart";
 import "package:flutter/material.dart";
 
 class EditProfileModal extends StatefulWidget {
-  const EditProfileModal({super.key});
+  final ValueNotifier<Uint8List?> profileImgBytes;
+  final ValueNotifier<Uint8List?> bannerImgBytes;
+  const EditProfileModal(
+      {super.key, required this.profileImgBytes, required this.bannerImgBytes});
 
   @override
   State<EditProfileModal> createState() => _EditProfileModalState();
@@ -101,6 +106,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
               const SizedBox(height: 8),
               ProfileBanner(
                 isEditable: true,
+                bannerImgBytes: widget.bannerImgBytes,
               ),
               const SizedBox(height: 16),
               Text(
@@ -110,33 +116,9 @@ class _EditProfileModalState extends State<EditProfileModal> {
               const SizedBox(height: 8),
               ProfilePicture(
                 isEditable: true,
+                profileImgBytes: widget.profileImgBytes,
               ),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(
-                        "Cancel",
-                        style:
-                            kXXSmallTextStyle.copyWith(color: kGreenColor100),
-                      )),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: kGreenColor100),
-                    child: Text(
-                      "Save Changes",
-                      style: kXXSmallTextStyle.copyWith(
-                          color: kGreenColor500, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              )
             ],
           ),
         ),

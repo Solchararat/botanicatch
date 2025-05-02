@@ -8,7 +8,10 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileBanner extends StatefulWidget {
   final bool isEditable;
-  const ProfileBanner({super.key, this.isEditable = false});
+  final ValueNotifier<Uint8List?> bannerImgBytes;
+
+  const ProfileBanner(
+      {super.key, required this.bannerImgBytes, this.isEditable = false});
 
   @override
   State<ProfileBanner> createState() => _ProfileBannerState();
@@ -19,26 +22,18 @@ class _ProfileBannerState extends State<ProfileBanner> {
   final StorageService _storage = StorageService.instance;
   final ImagePicker _picker = ImagePicker();
   final String _filePath = "users/$_uid/banner-picture/banner.jpg";
-  late final ValueNotifier<Uint8List?> _imageNotifier;
 
   @override
   void initState() {
     super.initState();
-    _imageNotifier = ValueNotifier(null);
     _getBannerPicture();
-  }
-
-  @override
-  void dispose() {
-    _imageNotifier.dispose();
-    super.dispose();
   }
 
   Future<void> _onBannerTapped() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
     final imageBytes = await image.readAsBytes();
-    _imageNotifier.value = imageBytes;
+    widget.bannerImgBytes.value = imageBytes;
 
     await _storage.uploadFile(_filePath, image);
   }
@@ -46,7 +41,7 @@ class _ProfileBannerState extends State<ProfileBanner> {
   Future<void> _getBannerPicture() async {
     try {
       final imageBytes = await _storage.getFile(_filePath);
-      _imageNotifier.value = imageBytes;
+      widget.bannerImgBytes.value = imageBytes;
       if (imageBytes == null) return;
     } catch (e) {
       log("Banner picture not uploaded yet.");
@@ -61,7 +56,7 @@ class _ProfileBannerState extends State<ProfileBanner> {
               GestureDetector(
                 onTap: _onBannerTapped,
                 child: ValueListenableBuilder(
-                    valueListenable: _imageNotifier,
+                    valueListenable: widget.bannerImgBytes,
                     builder: (_, imageBytes, __) {
                       return Container(
                         height: 100,
@@ -111,7 +106,7 @@ class _ProfileBannerState extends State<ProfileBanner> {
             ],
           )
         : ValueListenableBuilder(
-            valueListenable: _imageNotifier,
+            valueListenable: widget.bannerImgBytes,
             builder: (_, imageBytes, __) {
               return Container(
                   height: 200,
