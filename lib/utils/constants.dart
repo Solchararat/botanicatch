@@ -56,3 +56,10 @@ const kOutlineInputBorder = OutlineInputBorder(
   ),
   borderSide: BorderSide.none,
 );
+
+const kProfileOutlineInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.all(
+    Radius.circular(10.0),
+  ),
+  borderSide: BorderSide.none,
+);
