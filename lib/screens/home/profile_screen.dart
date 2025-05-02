@@ -1,5 +1,6 @@
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
+import 'package:botanicatch/widgets/modals/edit_profile_modal.dart';
 import 'package:botanicatch/widgets/profile/achievement_badges.dart';
 import 'package:botanicatch/widgets/profile/activity_item.dart';
 import 'package:botanicatch/widgets/profile/profile_header.dart';
@@ -12,8 +13,14 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
+// TODO: Show modal to edit name and profile picture on tap of the edit button
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // mock function for generating last activities
   List<Widget> _fetchLastActivities() {
     return List.generate(3, (_) => const ActivityItem());
@@ -22,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
@@ -45,13 +53,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // to make the name centered
                     const SizedBox(width: 16),
                     Text(
-                      "Uncle Kevin",
+                      "Guest",
                       style: kSmallTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => const EditProfileModal());
+                      },
                       child: const Icon(
                         Icons.edit,
                         color: Colors.white,
