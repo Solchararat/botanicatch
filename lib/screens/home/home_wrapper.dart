@@ -1,3 +1,4 @@
+import 'package:botanicatch/screens/home/garden_screen.dart';
 import 'package:botanicatch/screens/home/home_screen.dart';
 import 'package:botanicatch/screens/home/profile_screen.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
@@ -17,7 +18,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   static const List<Widget> _screens = [
     HomeScreen(),
     ProfileScreen(),
-    ProfileScreen(),
+    GardenScreen(),
     ProfileScreen(),
   ];
 
