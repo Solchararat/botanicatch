@@ -44,35 +44,22 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider.of(context);
+    bool keyboardIsOpened = MediaQuery.of(context).viewInsets.bottom != 0.0;
 
-    return user.uid == null || user.uid!.isEmpty
-        ? const BackgroundImage(
-            imagePath: "assets/images/home_bg.jpg",
-            child: Center(
-              child: CircularProgressIndicator(
-                color: kGreenColor300,
-              ),
-            ),
-          )
-        : StreamProvider<UserModel>.value(
-            initialData: user,
-            value: DatabaseService(uid: user.uid!).userModel,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              extendBody: true,
-              body: ValueListenableBuilder(
-                  valueListenable: _currentScreenIndex,
-                  builder: (context, index, _) => _screens[index]),
-              bottomNavigationBar: CustomBottomNavBar(
-                selectedIndexNotifier: _currentScreenIndex,
-                onDestinationSelect: (int index) => _navigateOnPress(index),
-              ),
-              // TODO: Implement onPress function
-              floatingActionButton: CameraFab(onPressed: () {}),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-            ),
-          );
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBody: true,
+      body: ValueListenableBuilder(
+          valueListenable: _currentScreenIndex,
+          builder: (context, index, _) => _screens[index]),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndexNotifier: _currentScreenIndex,
+        onDestinationSelect: (int index) => _navigateOnPress(index),
+      ),
+      // TODO: Implement onPress function
+      floatingActionButton: Visibility(
+          visible: !keyboardIsOpened, child: CameraFab(onPressed: () {})),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
   }
 }

@@ -22,7 +22,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         StreamProvider<UserModel?>.value(
-          initialData: UserModel(uid: "", email: "", username: "Guest"),
+          initialData: null,
           value: AuthService.instance.user,
         ),
       ],
