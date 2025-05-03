@@ -17,20 +17,32 @@ class DatabaseService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection(("users"));
 
-  Future updateUserData({
-    String? username,
-    String? email,
-  }) async {
-    return await userCollection.doc(uid).set({
-      "username": username,
-      "email": email,
-    });
+  Future<void> updateUserData({String? username, String? email}) async {
+    final Map<String, dynamic> updatedData = {};
+
+    if (username != null) {
+      updatedData['username'] = username;
+    }
+
+    if (email != null) {
+      updatedData['email'] = email;
+    }
+
+    final docSnapshot = await userCollection.doc(uid).get();
+
+    if (docSnapshot.exists) {
+      return await userCollection.doc(uid).update(updatedData);
+    } else {
+      return await userCollection
+          .doc(uid)
+          .set(updatedData, SetOptions(merge: true));
+    }
   }
 
   UserModel _userModelFromSnapshot(DocumentSnapshot snapshot) {
     return UserModel(
       uid: uid,
-      username: snapshot.get("username") ?? "",
+      username: snapshot.get("username") ?? "Guest",
       email: snapshot.get("email") ?? "",
     );
   }
