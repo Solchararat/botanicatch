@@ -1,8 +1,13 @@
+import 'package:botanicatch/models/user_model.dart';
 import 'package:botanicatch/screens/home/home_screen.dart';
 import 'package:botanicatch/screens/home/profile_screen.dart';
+import 'package:botanicatch/services/db/db_service.dart';
+import 'package:botanicatch/utils/constants.dart';
+import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/navbars/custom_bottom_navbar.dart';
+import 'package:provider/provider.dart';
 
 class HomeWrapper extends StatefulWidget {
   const HomeWrapper({super.key});
@@ -39,19 +44,35 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBody: true,
-      body: ValueListenableBuilder(
-          valueListenable: _currentScreenIndex,
-          builder: (context, index, _) => _screens[index]),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndexNotifier: _currentScreenIndex,
-        onDestinationSelect: (int index) => _navigateOnPress(index),
-      ),
-      // TODO: Implement onPress function
-      floatingActionButton: CameraFab(onPressed: () {}),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+    final UserModel user = Provider.of(context);
+
+    return user.uid == null || user.uid!.isEmpty
+        ? const BackgroundImage(
+            imagePath: "assets/images/home_bg.jpg",
+            child: Center(
+              child: CircularProgressIndicator(
+                color: kGreenColor300,
+              ),
+            ),
+          )
+        : StreamProvider<UserModel>.value(
+            initialData: user,
+            value: DatabaseService(uid: user.uid!).userModel,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              extendBody: true,
+              body: ValueListenableBuilder(
+                  valueListenable: _currentScreenIndex,
+                  builder: (context, index, _) => _screens[index]),
+              bottomNavigationBar: CustomBottomNavBar(
+                selectedIndexNotifier: _currentScreenIndex,
+                onDestinationSelect: (int index) => _navigateOnPress(index),
+              ),
+              // TODO: Implement onPress function
+              floatingActionButton: CameraFab(onPressed: () {}),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+            ),
+          );
   }
 }
