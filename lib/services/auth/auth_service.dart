@@ -15,8 +15,21 @@ class AuthService {
       user != null ? UserModel(uid: user.uid, email: user.email) : null;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+
   Stream<UserModel?> get user =>
-      _auth.authStateChanges().map(_userFromFirebase);
+      _auth.authStateChanges().asyncMap((User? firebaseUser) async {
+        if (firebaseUser == null) {
+          return null;
+        }
+
+        try {
+          final dbService = DatabaseService(uid: firebaseUser.uid);
+          return await dbService.userModel.first;
+        } catch (e) {
+          return UserModel(uid: firebaseUser.uid, email: firebaseUser.email);
+        }
+      });
+
   User? get currentUser => _auth.currentUser;
 
   // Send verification email
@@ -73,7 +86,6 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    UserModel? userModel;
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -97,6 +109,25 @@ class AuthService {
     } catch (e) {
       log("Exception @signOut: $e");
       _status = AuthExceptionHandler.handleException(e);
+    }
+  }
+
+  Future<void> clearAuthCache() async {
+    try {
+      await _auth.signOut();
+      await Future.delayed(const Duration(seconds: 1));
+    } catch (e) {
+      log("Exception @clearAuthCache: $e");
+    }
+  }
+
+  void checkAuthValidity(User? user) async {
+    if (user != null) {
+      try {
+        await user.getIdToken(true);
+      } catch (e) {
+        await AuthService.instance.signOut();
+      }
     }
   }
 }
