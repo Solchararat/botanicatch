@@ -44,9 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel>(context);
+    final user = Provider.of<UserModel?>(context);
 
-    return user.username == null || user.username!.isEmpty
+    return user == null || user.username == null || user.username!.isEmpty
         ? const BackgroundImage(
             imagePath: "assets/images/home_bg.jpg",
             child: Center(
