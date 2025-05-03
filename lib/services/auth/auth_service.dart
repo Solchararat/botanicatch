@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/utils/auth_exception_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -51,13 +52,15 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      User? user = result.user;
-      if (user != null) {
-        _status = AuthResultStatus.successful;
-        userModel = _userFromFirebase(user);
-      } else {
-        _status = AuthResultStatus.undefined;
-      }
+      final User? user = result.user;
+      if (user == null) throw Exception("User registration failed");
+
+      // create a new document for the user with the uid
+      await DatabaseService(uid: user.uid)
+          .updateUserData(username: "Guest", email: user.email);
+
+      _status = AuthResultStatus.successful;
+      return (_status, _userFromFirebase(user));
     } catch (e) {
       log("Exception @signUpWithEmailAndPassword: $e");
       _status = AuthExceptionHandler.handleException(e);
@@ -76,18 +79,15 @@ class AuthService {
           email: email, password: password);
 
       User? user = result.user;
+      if (user == null) throw Exception("User login failed");
 
-      if (user != null) {
-        userModel = _userFromFirebase(user);
-        _status = AuthResultStatus.successful;
-      } else {
-        _status = AuthResultStatus.undefined;
-      }
+      _status = AuthResultStatus.successful;
+      return (_status, _userFromFirebase(user));
     } catch (e) {
       log("Exception @signInWithEmailAndPassword: $e");
       _status = AuthExceptionHandler.handleException(e);
+      return (_status, null);
     }
-    return (_status, userModel);
   }
 
   // Sign out
