@@ -9,9 +9,14 @@ import 'dart:developer';
 class ProfilePicture extends StatefulWidget {
   final bool isEditable;
   final ValueNotifier<Uint8List?> profileImgBytes;
-
+  final double width;
+  final double height;
   const ProfilePicture(
-      {super.key, required this.profileImgBytes, this.isEditable = false});
+      {super.key,
+      required this.profileImgBytes,
+      this.isEditable = false,
+      this.width = 100,
+      this.height = 100});
 
   @override
   State<ProfilePicture> createState() => _ProfilePictureState();
@@ -60,8 +65,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
                   valueListenable: widget.profileImgBytes,
                   builder: (_, imageBytes, __) {
                     return Container(
-                      height: 100,
-                      width: 100,
+                      height: widget.height,
+                      width: widget.width,
                       decoration: BoxDecoration(
                         color: imageBytes != null
                             ? Colors.black
@@ -117,8 +122,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
             valueListenable: widget.profileImgBytes,
             builder: (_, imageBytes, __) {
               return Container(
-                  height: 100,
-                  width: 100,
+                  height: widget.height,
+                  width: widget.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: kGreenColor500, width: 3),
                     color: Colors.grey[300],

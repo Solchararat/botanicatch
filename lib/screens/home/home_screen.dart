@@ -1,14 +1,36 @@
+import 'dart:typed_data';
+
 import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/widgets/buttons/plant_action_button.dart';
 import 'package:botanicatch/widgets/buttons/plant_stats_button.dart';
 import 'package:botanicatch/widgets/grids/plant_action_grid.dart';
+import 'package:botanicatch/widgets/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/utils/constants.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   static final AuthService _auth = AuthService.instance;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final ValueNotifier<Uint8List?> _profileImgBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileImgBytes = ValueNotifier<Uint8List?>(null);
+  }
+
+  @override
+  void dispose() {
+    _profileImgBytes.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +53,11 @@ class HomeScreen extends StatelessWidget {
                     cacheWidth: 190,
                     cacheHeight: 100,
                   ),
-                  Image.asset("assets/images/user.png")
+                  ProfilePicture(
+                    profileImgBytes: _profileImgBytes,
+                    width: 50,
+                    height: 50,
+                  )
                 ],
               ),
               Align(
@@ -137,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   TextButton(
                       onPressed: () {
-                        _auth.signOut();
+                        HomeScreen._auth.signOut();
                       },
                       child: Text(
                         "Log Out",
