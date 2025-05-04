@@ -63,3 +63,12 @@ const kProfileOutlineInputBorder = OutlineInputBorder(
   ),
   borderSide: BorderSide.none,
 );
+
+const kGardenOutlineInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.all(
+    Radius.circular(15.0),
+  ),
+  borderSide: BorderSide(
+    color: kGreenColor300,
+  ),
+);
