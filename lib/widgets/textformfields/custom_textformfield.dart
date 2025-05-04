@@ -61,8 +61,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 cursorColor: kGreenColor300,
                 focusNode: _focusNode,
                 decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
                   suffixIcon: widget.suffixIcon,
                   filled: true,
                   fillColor: isFocus ? widget.focusColor : widget.fillColor,

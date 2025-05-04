@@ -21,7 +21,7 @@ class _AuthButtonState extends State<AuthButton> {
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: kGreenColor100),
+            side: const BorderSide(color: kGreenColor100),
           ),
         ),
       ),

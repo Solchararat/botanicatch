@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Stack(
             children: [
               // Background Image
-              BackgroundImage(
+              const BackgroundImage(
                 imagePath: "assets/images/home_bg.jpg",
                 hasPadding: false,
               ),
@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const Divider(thickness: 0.5, height: 0.5),
                     const AchievementBadges(),
                     const Divider(thickness: 0.5, height: 0.5),
-                    ProfileSectionTitle(title: "Last Activities"),
+                    const ProfileSectionTitle(title: "Last Activities"),
                     Column(
                       children: _fetchLastActivities(),
                     )

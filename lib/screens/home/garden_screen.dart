@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
+import 'package:botanicatch/widgets/cards/plant_item.dart';
 import 'package:botanicatch/widgets/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class _GardenScreenState extends State<GardenScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 45),
+                  const SizedBox(width: 45),
                   Image.asset(
                     "assets/images/logo-small.png",
                     cacheWidth: 190,
@@ -58,7 +59,7 @@ class _GardenScreenState extends State<GardenScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 decoration: InputDecoration(
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.search,
                     color: kGreenColor300,
                   ),
@@ -71,7 +72,8 @@ class _GardenScreenState extends State<GardenScreen> {
                   errorBorder: kGardenOutlineInputBorder,
                   focusedErrorBorder: kGardenOutlineInputBorder,
                 ),
-              )
+              ),
+              const PlantItem(),
             ],
           ),
         ),

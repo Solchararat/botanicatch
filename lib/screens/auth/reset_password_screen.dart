@@ -72,9 +72,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       Text("RESET PASSWORD",
                           style: kMediumTextStyle.copyWith(
                               fontWeight: FontWeight.bold)),
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
-                        child: const Text(
+                        child: Text(
                           "Please enter your registered email address to reset your password.",
                           style: kXXSmallTextStyle,
                           textAlign: TextAlign.center,

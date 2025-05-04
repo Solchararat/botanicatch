@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 45),
+                  const SizedBox(width: 45),
                   Image.asset(
                     "assets/images/logo-small.png",
                     cacheWidth: 190,
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "You are now logged in!",
                     style: kSmallTextStyle,
                   ),

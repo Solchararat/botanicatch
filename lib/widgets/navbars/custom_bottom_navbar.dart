@@ -59,7 +59,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                     onSelected: _selectNavigationItem,
                   ),
                 ),
-                Expanded(child: SizedBox()),
+                const Expanded(child: SizedBox()),
                 Expanded(
                   child: NavbarIconButton(
                     index: 2,
