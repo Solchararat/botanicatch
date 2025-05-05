@@ -244,21 +244,7 @@ class _GardenScreenState extends State<GardenScreen> {
             crossAxisCount: numColumns,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8),
-        itemBuilder: (context, index) {
-          final plantData = _plants[index];
-          final plantId = plantData["plant_id"]?.padLeft(3, "0");
-          final commonName = plantData["common_name"];
-          final scientificName = plantData["scientific_name"];
-          final description = plantData["description"];
-          final type = plantData["type"];
-          return PlantItem(
-            plantId: plantId,
-            commonName: commonName,
-            scientificName: scientificName,
-            description: description,
-            type: type,
-          );
-        });
+        itemBuilder: (context, index) => _buildItem(index));
   }
 
   Widget _buildItem(int index) {
@@ -275,6 +261,7 @@ class _GardenScreenState extends State<GardenScreen> {
       scientificName: scientificName,
       description: description,
       type: type,
+      profileImgBytes: _profileImgBytes,
     );
   }
 
