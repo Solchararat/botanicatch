@@ -1,25 +1,41 @@
+import 'dart:typed_data';
+
+import 'package:botanicatch/screens/home/plant_item_screen.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class PlantItem extends StatelessWidget {
+  final ValueNotifier<Uint8List?> profileImgBytes;
   final String? plantId;
   final String? commonName;
   final String? scientificName;
   final String? description;
   final String? type;
-  const PlantItem({
-    super.key,
-    this.plantId,
-    this.commonName,
-    this.scientificName,
-    this.description,
-    this.type,
-  });
+  const PlantItem(
+      {super.key,
+      this.plantId,
+      this.commonName,
+      this.scientificName,
+      this.description,
+      this.type,
+      required this.profileImgBytes});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PlantItemScreen(
+                      profileImgBytes: profileImgBytes,
+                      plantId: plantId,
+                      commonName: commonName,
+                      scientificName: scientificName,
+                      description: description,
+                      type: type,
+                    )));
+      },
       child: Container(
           width: 170,
           height: 150,
