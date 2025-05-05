@@ -143,27 +143,44 @@ class _GardenScreenState extends State<GardenScreen> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: GridView.builder(
-                    itemCount: _plants.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8),
-                    itemBuilder: (context, index) {
-                      final plantData = _plants[index];
-                      final commonName = plantData["common_name"];
-                      final plantId = plantData["plant_id"]?.padLeft(3, "0");
-                      return PlantItem(
-                        name: commonName,
-                        number: plantId,
-                      );
-                    }),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    if (constraints.maxWidth > 600) {
+                      return _buildGrid(3);
+                    } else {
+                      return _buildGrid(2);
+                    }
+                  },
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  _buildGrid(int numColumns) {
+    return GridView.builder(
+        itemCount: _plants.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: numColumns,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8),
+        itemBuilder: (context, index) {
+          final plantData = _plants[index];
+          final plantId = plantData["plant_id"]?.padLeft(3, "0");
+          final commonName = plantData["common_name"];
+          final scientificName = plantData["scientific_name"];
+          final description = plantData["description"];
+          final type = plantData["type"];
+          return PlantItem(
+            plantId: plantId,
+            commonName: commonName,
+            scientificName: scientificName,
+            description: description,
+            type: type,
+          );
+        });
   }
 }
