@@ -24,7 +24,6 @@ class PlantItem extends StatelessWidget {
         child: Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-              width: 170,
               height: 30,
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               decoration: const BoxDecoration(

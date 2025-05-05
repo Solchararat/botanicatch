@@ -15,17 +15,85 @@ class GardenScreen extends StatefulWidget {
 
 class _GardenScreenState extends State<GardenScreen> {
   late final ValueNotifier<Uint8List?> _profileImgBytes;
+  late List<Map<String, String>> _plants;
 
   @override
   void initState() {
     super.initState();
     _profileImgBytes = ValueNotifier<Uint8List?>(null);
+    _plants = _fetchPlants();
   }
 
   @override
   void dispose() {
     _profileImgBytes.dispose();
     super.dispose();
+  }
+
+  // TODO: Implement mock function to populate gridview builder
+  // TODO: Implement list of mock objects (plants)
+  final List<Map<String, String>> _list = [
+    {
+      "plant_id": "1",
+      "common_name": "Aloe Vera",
+      "scientific_name": "Aloe barbadensis miller",
+      "description":
+          "Aloe Vera is a popular succulent known for its soothing and healing properties. It is a hardy plant that brings a refreshing aesthetic to any indoor or outdoor setting, while also offering medicinal benefits for skin care and overall wellness.",
+      "type": "succulent",
+    },
+    {
+      "plant_id": "2",
+      "common_name": "Snake Plant",
+      "scientific_name": "Sansevieria trifasciata",
+      "description":
+          "The Snake Plant, or Mother-in-Law's Tongue, is a resilient and low-maintenance indoor plant. Its striking upright leaves add a modern touch to decor, and it's known for its air-purifying qualities, making it a practical and stylish choice.",
+      "type": "houseplant",
+    },
+    {
+      "plant_id": "3",
+      "common_name": "Rose",
+      "scientific_name": "Rosa spp.",
+      "description":
+          "Roses are classic flowering shrubs admired for their beautiful blooms and fragrant flowers. Available in a wide variety of colors and forms, they are a popular choice for gardens and bouquets, symbolizing love and beauty.",
+      "type": "shrub",
+    },
+    {
+      "plant_id": "4",
+      "common_name": "Orchid",
+      "scientific_name": "Orchidaceae",
+      "description":
+          "Orchids are elegant and diverse flowering plants known for their intricate and often exotic blooms. They are prized for their beauty and are popular as ornamental houseplants, adding a touch of sophistication to any space.",
+      "type": "houseplant",
+    },
+    {
+      "plant_id": "5",
+      "common_name": "Sunflower",
+      "scientific_name": "Helianthus annuus",
+      "description":
+          "Sunflowers are tall and vibrant annual plants with large, daisy-like flower heads. Known for their heliotropism (following the sun), they bring cheerfulness to gardens and are also cultivated for their edible seeds and oil.",
+      "type": "annual",
+    },
+    {
+      "plant_id": "12",
+      "common_name": "Fiddle Leaf Fig",
+      "scientific_name": "Ficus lyrata",
+      "description":
+          "A popular statement houseplant with large, violin-shaped leaves.",
+      "type": "houseplant",
+    },
+    {
+      "plant_id": "105",
+      "common_name": "Lavender",
+      "scientific_name": "Lavandula angustifolia",
+      "description":
+          "A fragrant herb known for its calming properties and purple flowers.",
+      "type": "herb",
+    },
+  ];
+
+  // mock function to fetch items
+  List<Map<String, String>> _fetchPlants() {
+    return _list;
   }
 
   @override
@@ -73,7 +141,25 @@ class _GardenScreenState extends State<GardenScreen> {
                   focusedErrorBorder: kGardenOutlineInputBorder,
                 ),
               ),
-              const PlantItem(),
+              const SizedBox(height: 16),
+              Expanded(
+                child: GridView.builder(
+                    itemCount: _plants.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8),
+                    itemBuilder: (context, index) {
+                      final plantData = _plants[index];
+                      final commonName = plantData["common_name"];
+                      final plantId = plantData["plant_id"]?.padLeft(3, "0");
+                      return PlantItem(
+                        name: commonName,
+                        number: plantId,
+                      );
+                    }),
+              ),
             ],
           ),
         ),
