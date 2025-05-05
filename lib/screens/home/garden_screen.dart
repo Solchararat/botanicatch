@@ -16,6 +16,11 @@ class GardenScreen extends StatefulWidget {
 class _GardenScreenState extends State<GardenScreen> {
   late final ValueNotifier<Uint8List?> _profileImgBytes;
   late List<Map<String, String>> _plants;
+  final double _logoHeight = 45.0;
+  final double _profilePicSize = 50.0;
+  final double _verticalSpacing = 16.0;
+  final double _horizontalPadding = 8.0;
+  final double _searchBarHeightEstimate = 50.0;
 
   @override
   void initState() {
@@ -101,62 +106,134 @@ class _GardenScreenState extends State<GardenScreen> {
     return BackgroundImage(
       imagePath: "assets/images/home_bg.jpg",
       child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 45),
-                  Image.asset(
-                    "assets/images/logo-small.png",
-                    cacheWidth: 190,
-                    cacheHeight: 100,
-                  ),
-                  ProfilePicture(
-                    profileImgBytes: _profileImgBytes,
-                    width: 50,
-                    height: 50,
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: kGreenColor300,
-                  ),
-                  hintText: "Search Plant",
-                  contentPadding: const EdgeInsets.all(12),
-                  hintStyle: kXXSmallTextStyle.copyWith(color: kGreenColor300),
-                  border: kGardenOutlineInputBorder,
-                  enabledBorder: kGardenOutlineInputBorder,
-                  focusedBorder: kGardenOutlineInputBorder,
-                  errorBorder: kGardenOutlineInputBorder,
-                  focusedErrorBorder: kGardenOutlineInputBorder,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    if (constraints.maxWidth > 600) {
-                      return _buildGrid(3);
-                    } else {
-                      return _buildGrid(2);
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
+        child: OrientationBuilder(
+          builder: (context, orientation) {
+            if (orientation == Orientation.landscape) {
+              return _buildLandscapeLayout();
+            } else {
+              return _buildPortraitLayout();
+            }
+          },
         ),
       ),
+    );
+  }
+
+  _buildPortraitLayout() {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(width: 45),
+              Image.asset(
+                "assets/images/logo-small.png",
+                height: 45,
+                fit: BoxFit.contain,
+              ),
+              ProfilePicture(
+                profileImgBytes: _profileImgBytes,
+                width: 50,
+                height: 50,
+              )
+            ],
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.search,
+                color: kGreenColor300,
+              ),
+              hintText: "Search Plant",
+              contentPadding: const EdgeInsets.all(12),
+              hintStyle: kXXSmallTextStyle.copyWith(color: kGreenColor300),
+              border: kGardenOutlineInputBorder,
+              enabledBorder: kGardenOutlineInputBorder,
+              focusedBorder: kGardenOutlineInputBorder,
+              errorBorder: kGardenOutlineInputBorder,
+              focusedErrorBorder: kGardenOutlineInputBorder,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(child: _buildGrid(2)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscapeLayout() {
+    final double appBarContentHeight = _logoHeight +
+        _verticalSpacing +
+        _searchBarHeightEstimate +
+        _verticalSpacing;
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          pinned: false,
+          floating: false,
+          snap: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          expandedHeight: appBarContentHeight,
+          toolbarHeight: 0.1,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Padding(
+              padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: _profilePicSize),
+                      Image.asset(
+                        "assets/images/logo-small.png",
+                        height: _logoHeight,
+                        fit: BoxFit.contain,
+                      ),
+                      ProfilePicture(
+                        profileImgBytes: _profileImgBytes,
+                        width: _profilePicSize,
+                        height: _profilePicSize,
+                      )
+                    ],
+                  ),
+                  SizedBox(height: _verticalSpacing),
+                  // Search Field
+                  TextFormField(
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          const Icon(Icons.search, color: kGreenColor300),
+                      hintText: "Search Plant",
+                      contentPadding: const EdgeInsets.all(12),
+                      hintStyle:
+                          kXXSmallTextStyle.copyWith(color: kGreenColor300),
+                      border: kGardenOutlineInputBorder,
+                      enabledBorder: kGardenOutlineInputBorder,
+                      focusedBorder: kGardenOutlineInputBorder,
+                      errorBorder: kGardenOutlineInputBorder,
+                      focusedErrorBorder: kGardenOutlineInputBorder,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(_horizontalPadding),
+          sliver: _buildSliverGrid(3),
+        ),
+      ],
     );
   }
 
@@ -182,5 +259,34 @@ class _GardenScreenState extends State<GardenScreen> {
             type: type,
           );
         });
+  }
+
+  Widget _buildItem(int index) {
+    final plantData = _plants[index];
+    final plantId = plantData["plant_id"]?.padLeft(3, "0") ?? "000";
+    final commonName = plantData["common_name"] ?? "Unknown";
+    final scientificName = plantData["scientific_name"];
+    final description = plantData["description"];
+    final type = plantData["type"];
+
+    return PlantItem(
+      plantId: plantId,
+      commonName: commonName,
+      scientificName: scientificName,
+      description: description,
+      type: type,
+    );
+  }
+
+  Widget _buildSliverGrid(int numColumns) {
+    return SliverGrid.builder(
+        itemCount: _plants.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: numColumns,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1,
+        ),
+        itemBuilder: (context, index) => _buildItem(index));
   }
 }
