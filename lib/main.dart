@@ -1,3 +1,4 @@
+import 'package:botanicatch/services/shared_preferences/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -8,9 +9,12 @@ import 'package:botanicatch/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Future.wait([
+    Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    ),
+    SharedPrefsService.instance.init(),
+  ]);
   runApp(const App());
 }
 

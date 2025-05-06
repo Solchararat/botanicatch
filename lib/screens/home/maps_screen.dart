@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:botanicatch/services/shared_preferences/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
@@ -14,15 +16,16 @@ class MapsScreen extends StatefulWidget {
 
 class _MapsScreenState extends State<MapsScreen> {
   late final GoogleMapController _mapController;
-
   static final Location _locationController = Location();
-  late final ValueNotifier<LatLng> _currentPosition;
+  final ValueNotifier<LatLng> _currentPosition =
+      ValueNotifier(const LatLng(0, 0));
   StreamSubscription<LocationData>? _locationSubscription;
+  final SharedPrefsService _prefsService = SharedPrefsService.instance;
 
   @override
   void initState() {
     super.initState();
-    _currentPosition = ValueNotifier<LatLng>(const LatLng(0, 0));
+    _loadCachedPosition();
     _getLocationUpdates();
   }
 
@@ -31,6 +34,17 @@ class _MapsScreenState extends State<MapsScreen> {
     _locationSubscription?.cancel();
     _currentPosition.dispose();
     super.dispose();
+  }
+
+  void _loadCachedPosition() {
+    final cached = _prefsService.getCachedPosition();
+    if (cached != null) {
+      _currentPosition.value = cached;
+    }
+  }
+
+  Future<void> _cachePosition(LatLng position) async {
+    await _prefsService.cachePosition(position);
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -78,6 +92,7 @@ class _MapsScreenState extends State<MapsScreen> {
         LatLng(initialLocation.latitude!, initialLocation.longitude!);
 
     _currentPosition.value = initialPosition;
+    _cachePosition(initialPosition);
     _cameraToPosition(_currentPosition.value);
 
     _locationController.changeSettings(
@@ -93,8 +108,8 @@ class _MapsScreenState extends State<MapsScreen> {
             LatLng(currentLocation.latitude!, currentLocation.longitude!);
 
         _currentPosition.value = newPosition;
+        _cachePosition(newPosition);
         _cameraToPosition(_currentPosition.value);
-
         log("${_currentPosition.value}");
       }
     });
