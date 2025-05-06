@@ -5,7 +5,6 @@ import 'package:botanicatch/services/shared_preferences/shared_preferences_servi
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
@@ -60,19 +59,24 @@ class _MapsScreenState extends State<MapsScreen> {
   }
 
   Future<void> _getLocationUpdates() async {
+    final cached = _prefsService.getCachedPosition();
+    bool hasCachedPosition = false;
+
+    if (cached != null) {
+      _currentPosition.value = cached;
+      hasCachedPosition = true;
+    }
+
     bool serviceEnabled;
     PermissionStatus permissionGranted;
-    LocationData initialLocation;
 
     final List<dynamic> results = await Future.wait([
       _locationController.serviceEnabled(),
       _locationController.hasPermission(),
-      _locationController.getLocation(),
     ]);
 
     serviceEnabled = results[0];
     permissionGranted = results[1];
-    initialLocation = results[2];
 
     if (!serviceEnabled) {
       serviceEnabled = await _locationController.requestService();
@@ -88,11 +92,20 @@ class _MapsScreenState extends State<MapsScreen> {
       }
     }
 
-    final LatLng initialPosition =
-        LatLng(initialLocation.latitude!, initialLocation.longitude!);
+    if (!hasCachedPosition) {
+      final LocationData initialLocation =
+          await _locationController.getLocation();
 
-    _currentPosition.value = initialPosition;
-    _cachePosition(initialPosition);
+      if (initialLocation.latitude != null &&
+          initialLocation.longitude != null) {
+        final LatLng initialPosition =
+            LatLng(initialLocation.latitude!, initialLocation.longitude!);
+
+        _currentPosition.value = initialPosition;
+        _cachePosition(initialPosition);
+      }
+    }
+
     _cameraToPosition(_currentPosition.value);
 
     _locationController.changeSettings(
