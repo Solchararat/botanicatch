@@ -6,11 +6,19 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    // Secrets Gradle Plugin
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 android {
     namespace = "com.example.botanicatch"
-    compileSdk = flutter.compileSdkVersion
+    // as mentioned by the google maps quickstart
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -28,7 +36,8 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        // as mentioned by the google maps quickstart
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
