@@ -1,5 +1,6 @@
 import 'package:botanicatch/screens/home/garden_screen.dart';
 import 'package:botanicatch/screens/home/home_screen.dart';
+import 'package:botanicatch/screens/home/maps_screen.dart';
 import 'package:botanicatch/screens/home/profile_screen.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     HomeScreen(),
     ProfileScreen(),
     GardenScreen(),
-    ProfileScreen(),
+    MapsScreen(),
   ];
 
   void _navigateOnPress(int index) {

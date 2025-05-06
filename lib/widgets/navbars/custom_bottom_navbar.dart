@@ -72,8 +72,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 Expanded(
                   child: NavbarIconButton(
                     index: 3,
-                    iconData: Icons.settings,
-                    label: "Settings",
+                    iconData: Icons.map,
+                    label: "Map",
                     selectedIndexNotifier: widget.selectedIndexNotifier,
                     onSelected: _selectNavigationItem,
                   ),
