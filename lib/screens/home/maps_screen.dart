@@ -20,6 +20,7 @@ class _MapsScreenState extends State<MapsScreen> {
       ValueNotifier(const LatLng(0, 0));
   StreamSubscription<LocationData>? _locationSubscription;
   final SharedPrefsService _prefsService = SharedPrefsService.instance;
+  final ValueNotifier<bool> _isMapLoading = ValueNotifier(true);
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _MapsScreenState extends State<MapsScreen> {
   void dispose() {
     _locationSubscription?.cancel();
     _currentPosition.dispose();
+    _isMapLoading.dispose();
     super.dispose();
   }
 
@@ -48,6 +50,7 @@ class _MapsScreenState extends State<MapsScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
+    _isMapLoading.value = false;
   }
 
   Future<void> _cameraToPosition(LatLng position) async {
@@ -103,10 +106,10 @@ class _MapsScreenState extends State<MapsScreen> {
 
         _currentPosition.value = initialPosition;
         _cachePosition(initialPosition);
+
+        _cameraToPosition(_currentPosition.value);
       }
     }
-
-    _cameraToPosition(_currentPosition.value);
 
     _locationController.changeSettings(
       interval: 1000,
