@@ -1,3 +1,4 @@
+import 'package:botanicatch/screens/home/camera_screen.dart';
 import 'package:botanicatch/screens/home/garden_screen.dart';
 import 'package:botanicatch/screens/home/home_screen.dart';
 import 'package:botanicatch/screens/home/maps_screen.dart';
@@ -19,6 +20,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   static const List<Widget> _screens = [
     HomeScreen(),
     ProfileScreen(),
+    CameraScreen(),
     GardenScreen(),
     MapsScreen(),
   ];
@@ -55,7 +57,14 @@ class _HomeWrapperState extends State<HomeWrapper> {
       ),
       // TODO: Implement onPress function
       floatingActionButton: Visibility(
-          visible: !keyboardIsOpened, child: CameraFab(onPressed: () {})),
+        visible: !keyboardIsOpened,
+        child: CameraFab(
+          onPressed: () {
+            _currentScreenIndex.value = 2; // Camera tab index
+            _navigateOnPress(2);
+          },
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

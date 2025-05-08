@@ -62,7 +62,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 const Expanded(child: SizedBox()),
                 Expanded(
                   child: NavbarIconButton(
-                    index: 2,
+                    index: 3,
                     iconData: Icons.spa,
                     label: "Garden",
                     selectedIndexNotifier: widget.selectedIndexNotifier,
@@ -71,7 +71,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 ),
                 Expanded(
                   child: NavbarIconButton(
-                    index: 3,
+                    index: 4,
                     iconData: Icons.map,
                     label: "Map",
                     selectedIndexNotifier: widget.selectedIndexNotifier,
