@@ -98,7 +98,18 @@ class _CameraScreenState extends State<CameraScreen> {
               }
 
               if (_isInitialized.value) {
-                return CameraPreview(controller);
+                final size = MediaQuery.of(context).size;
+                final deviceRatio = size.width / size.height;
+                final xScale = controller.value.aspectRatio / deviceRatio;
+                final double yScale = 1;
+                return AspectRatio(
+                  aspectRatio: deviceRatio,
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.diagonal3Values(xScale - 1, yScale, 1),
+                    child: CameraPreview(controller),
+                  ),
+                );
               }
 
               return const Center(
