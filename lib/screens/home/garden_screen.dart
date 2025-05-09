@@ -104,7 +104,7 @@ class _GardenScreenState extends State<GardenScreen> {
   @override
   Widget build(BuildContext context) {
     return BackgroundImage(
-      imagePath: "assets/images/home_bg.jpg",
+      imagePath: "assets/images/home-bg.jpg",
       child: SafeArea(
         child: OrientationBuilder(
           builder: (context, orientation) {

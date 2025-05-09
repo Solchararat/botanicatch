@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return user == null || user.username == null || user.username!.isEmpty
         ? const BackgroundImage(
-            imagePath: "assets/images/home_bg.jpg",
+            imagePath: "assets/images/home-bg.jpg",
             child: Center(
               child: CircularProgressIndicator(
                 color: kGreenColor300,
@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               // Background Image
               const BackgroundImage(
-                imagePath: "assets/images/home_bg.jpg",
+                imagePath: "assets/images/home-bg.jpg",
                 hasPadding: false,
               ),
 

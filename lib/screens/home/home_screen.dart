@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BackgroundImage(
-      imagePath: "assets/images/home_bg.jpg",
+      imagePath: "assets/images/home-bg.jpg",
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

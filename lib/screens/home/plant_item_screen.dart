@@ -27,7 +27,7 @@ class PlantItemScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BackgroundImage(
-        imagePath: "assets/images/home_bg.jpg",
+        imagePath: "assets/images/home-bg.jpg",
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8),
