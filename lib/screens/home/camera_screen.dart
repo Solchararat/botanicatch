@@ -2,6 +2,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -33,7 +34,11 @@ class _CameraScreenState extends State<CameraScreen> {
       }
 
       final firstCamera = cameras.first;
-      controller = CameraController(firstCamera, ResolutionPreset.max);
+      controller = CameraController(
+        firstCamera,
+        ResolutionPreset.max,
+        enableAudio: false,
+      );
 
       await controller.initialize();
 
@@ -63,34 +68,52 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _initializeFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (_hasError.value) {
-            return const BackgroundImage(
-              imagePath: "assets/images/home-bg.jpg",
-              child: Center(
-                child: Text('Failed to initialize camera.'),
-              ),
-            );
-          }
+    return Stack(
+      children: [
+        const Expanded(
+            child: BackgroundImage(imagePath: "assets/images/home-bg.jpg")),
+        FutureBuilder<void>(
+          future: _initializeFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (_hasError.value) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Please allow permissions to use the camera.',
+                        style: kXXSmallTextStyle,
+                      ),
+                      TextButton(
+                          onPressed: () => openAppSettings(),
+                          child: Text(
+                            "Open app settings",
+                            style: kXXSmallTextStyle.copyWith(
+                                color: kGreenColor300),
+                          ))
+                    ],
+                  ),
+                );
+              }
 
-          if (_isInitialized.value) {
-            return CameraPreview(controller);
-          }
+              if (_isInitialized.value) {
+                return CameraPreview(controller);
+              }
 
-          return const Center(
-            child: Text('Camera not initialized.'),
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: kGreenColor300,
-            ),
-          );
-        }
-      },
+              return const Center(
+                child: Text('Camera not initialized.'),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: kGreenColor300,
+                ),
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 }
