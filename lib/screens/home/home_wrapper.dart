@@ -77,13 +77,15 @@ class _HomeWrapperState extends State<HomeWrapper> {
       bottomNavigationBar: ValueListenableBuilder<bool>(
         valueListenable: _isNavBarVisible,
         builder: (context, isVisible, _) {
-          return AnimatedOpacity(
-            opacity: isVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: CustomBottomNavBar(
-              selectedIndexNotifier: _currentScreenIndex,
-              onDestinationSelect: _navigateOnPress,
+          return RepaintBoundary(
+            child: AnimatedOpacity(
+              opacity: isVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: CustomBottomNavBar(
+                selectedIndexNotifier: _currentScreenIndex,
+                onDestinationSelect: _navigateOnPress,
+              ),
             ),
           );
         },
@@ -92,15 +94,17 @@ class _HomeWrapperState extends State<HomeWrapper> {
         valueListenable: _isNavBarVisible,
         builder: (context, isVisible, _) {
           final showFab = isVisible && !keyboardIsOpened;
-          return AnimatedOpacity(
-            opacity: showFab ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            child: CameraFab(
-              onPressed: () {
-                _currentScreenIndex.value = 2;
-                _navigateOnPress(2);
-              },
+          return RepaintBoundary(
+            child: AnimatedOpacity(
+              opacity: showFab ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              child: CameraFab(
+                onPressed: () {
+                  _currentScreenIndex.value = 2;
+                  _navigateOnPress(2);
+                },
+              ),
             ),
           );
         },
