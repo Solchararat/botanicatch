@@ -102,13 +102,53 @@ class _CameraScreenState extends State<CameraScreen> {
                 final deviceRatio = size.width / size.height;
                 final xScale = controller.value.aspectRatio / deviceRatio;
                 final double yScale = 1;
-                return AspectRatio(
-                  aspectRatio: deviceRatio,
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.diagonal3Values(xScale - 1, yScale, 1),
-                    child: CameraPreview(controller),
-                  ),
+                return Stack(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: deviceRatio,
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform:
+                            Matrix4.diagonal3Values(xScale - 1, yScale, 1),
+                        child: CameraPreview(controller),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.4),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 120),
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                    border: const Border(
+                                      top: BorderSide(
+                                          color: kGrayColor300, width: 5),
+                                      bottom: BorderSide(
+                                          color: kGrayColor300, width: 5),
+                                      left: BorderSide(
+                                          color: kGrayColor300, width: 5),
+                                      right: BorderSide(
+                                          color: kGrayColor300, width: 5),
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 );
               }
 
