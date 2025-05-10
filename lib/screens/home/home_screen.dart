@@ -8,6 +8,7 @@ import 'package:botanicatch/widgets/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/utils/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,10 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(width: 45),
-                  Image.asset(
-                    "assets/images/logo-small.png",
-                    cacheWidth: 190,
-                    cacheHeight: 100,
+                  SvgPicture.asset(
+                    "assets/images/botanicatch.svg",
+                    height: 45,
                   ),
                   ProfilePicture(
                     profileImgBytes: _profileImgBytes,

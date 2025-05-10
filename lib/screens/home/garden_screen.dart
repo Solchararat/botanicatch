@@ -5,6 +5,7 @@ import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/cards/plant_item.dart';
 import 'package:botanicatch/widgets/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class GardenScreen extends StatefulWidget {
   const GardenScreen({super.key});
@@ -131,10 +132,9 @@ class _GardenScreenState extends State<GardenScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(width: 45),
-              Image.asset(
-                "assets/images/logo-small.png",
+              SvgPicture.asset(
+                "assets/images/botanicatch.svg",
                 height: 45,
-                fit: BoxFit.contain,
               ),
               ProfilePicture(
                 profileImgBytes: _profileImgBytes,
@@ -195,10 +195,9 @@ class _GardenScreenState extends State<GardenScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(width: _profilePicSize),
-                      Image.asset(
-                        "assets/images/logo-small.png",
-                        height: _logoHeight,
-                        fit: BoxFit.contain,
+                      SvgPicture.asset(
+                        "assets/images/botanicatch.svg",
+                        height: 45,
                       ),
                       ProfilePicture(
                         profileImgBytes: _profileImgBytes,
