@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'dart:io';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +18,31 @@ class _CameraScreenState extends State<CameraScreen> {
   late Future<void> _initializeFuture;
   late ValueNotifier<bool> _isInitialized;
   late ValueNotifier<bool> _hasError;
+  late ValueNotifier<XFile?> _capturedImage; // New notifier
 
   @override
   void initState() {
     super.initState();
     _isInitialized = ValueNotifier<bool>(false);
     _hasError = ValueNotifier<bool>(false);
+    _capturedImage = ValueNotifier<XFile?>(null); // Initialize
     _initializeFuture = _initializeCamera();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    _capturedImage.dispose(); // Clean up
+    super.dispose();
+  }
+
+  Future<void> _takePicture() async {
+    try {
+      final picture = await controller.takePicture();
+      _capturedImage.value = picture; // Update preview
+    } catch (e) {
+      debugPrint('Error capturing image: $e');
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -60,12 +78,6 @@ class _CameraScreenState extends State<CameraScreen> {
 
       _hasError.value = true;
     }
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -125,15 +137,17 @@ class _CameraScreenState extends State<CameraScreen> {
                                 sigmaY: 1.5,
                                 tileMode: TileMode.decal),
                             child: Container(
+                              height: 230,
+                              width: double.infinity,
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.4),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              child: Stack(
+                                alignment: Alignment.center,
                                 children: [
                                   InkWell(
-                                    onTap: () {},
+                                    onTap: _takePicture,
                                     child: Container(
                                       margin:
                                           const EdgeInsets.only(bottom: 100),
@@ -142,12 +156,40 @@ class _CameraScreenState extends State<CameraScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(100),
-                                        color: Colors.white,
+                                        color: Colors.transparent,
                                         border: Border.all(
-                                          color: kGrayColor300,
+                                          color: Colors.white,
                                           width: 5,
                                         ),
                                       ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 16,
+                                    child: ValueListenableBuilder<XFile?>(
+                                      valueListenable: _capturedImage,
+                                      builder: (context, image, _) {
+                                        if (image == null) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return Container(
+                                          margin: const EdgeInsets.only(
+                                              bottom: 100),
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Colors.white, width: 2),
+                                          ),
+                                          child: ClipOval(
+                                            child: Image.file(
+                                              File(image.path),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
