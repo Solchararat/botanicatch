@@ -1,4 +1,5 @@
 class PlantModel {
+  final int plantId;
   final String scientificName;
   final String commonName;
   final String family;
@@ -7,6 +8,7 @@ class PlantModel {
   final int confidence;
 
   PlantModel({
+    required this.plantId,
     required this.scientificName,
     required this.commonName,
     required this.family,
@@ -17,6 +19,7 @@ class PlantModel {
 
   factory PlantModel.fromJson(Map<String, dynamic> json) {
     return PlantModel(
+      plantId: json['plant_id'] ?? 0,
       scientificName: json['scientific_name'] ?? '',
       commonName: json['common_name'] ?? '',
       family: json['family'] ?? '',
@@ -27,6 +30,7 @@ class PlantModel {
   }
 
   Map<String, dynamic> toJson() => {
+        'plant_id': plantId,
         'scientific_name': scientificName,
         'common_name': commonName,
         'family': family,
