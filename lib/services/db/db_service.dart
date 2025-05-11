@@ -1,3 +1,4 @@
+import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -49,5 +50,9 @@ class DatabaseService {
 
   Stream<UserModel> get userModel {
     return userCollection.doc(uid).snapshots().map(_userModelFromSnapshot);
+  }
+
+  Future<void> addPlantData(PlantModel plant) async {
+    await userCollection.doc(uid).collection('plants').add(plant.toJson());
   }
 }
