@@ -1,10 +1,20 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:ui';
 import 'dart:io';
+import 'package:botanicatch/services/classification/classification_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+Future<String> _encodeImg(String filePath) async {
+  final File file = File(filePath);
+  final bytes = await file.readAsBytes();
+  return base64Encode(bytes);
+}
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -18,28 +28,39 @@ class _CameraScreenState extends State<CameraScreen> {
   late Future<void> _initializeFuture;
   late ValueNotifier<bool> _isInitialized;
   late ValueNotifier<bool> _hasError;
-  late ValueNotifier<XFile?> _capturedImage; // New notifier
+  late ValueNotifier<XFile?> _capturedImage;
+  static const String _endpointURL = "http://192.168.100.42:8000/classify";
+  static final ClassificationService _classificationService =
+      ClassificationService(endpointUrl: _endpointURL);
 
   @override
   void initState() {
     super.initState();
     _isInitialized = ValueNotifier<bool>(false);
     _hasError = ValueNotifier<bool>(false);
-    _capturedImage = ValueNotifier<XFile?>(null); // Initialize
+    _capturedImage = ValueNotifier<XFile?>(null);
     _initializeFuture = _initializeCamera();
   }
 
   @override
   void dispose() {
     controller.dispose();
-    _capturedImage.dispose(); // Clean up
+    _capturedImage.dispose();
     super.dispose();
   }
 
   Future<void> _takePicture() async {
     try {
-      final picture = await controller.takePicture();
-      _capturedImage.value = picture; // Update preview
+      final XFile picture = await controller.takePicture();
+      _capturedImage.value = picture;
+      final String base64Image = await compute(_encodeImg, picture.path);
+      final response = await _classificationService.processClassification(
+          base64Image: base64Image);
+
+      if (response != null && response.statusCode == 200) {
+        final newData = jsonDecode(response.body);
+        log("data: $newData");
+      }
     } catch (e) {
       debugPrint('Error capturing image: $e');
     }
