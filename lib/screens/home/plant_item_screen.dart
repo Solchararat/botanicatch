@@ -7,6 +7,7 @@ import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/profile/profile_picture.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PlantItemScreen extends StatelessWidget {
   final ValueNotifier<Uint8List?> profileImgBytes;
@@ -168,7 +169,10 @@ class PlantItemScreen extends StatelessWidget {
                       icon:
                           const Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
-                    Image.asset("assets/images/logo-small.png", height: 45),
+                    SvgPicture.asset(
+                      "assets/images/botanicatch.svg",
+                      height: 45,
+                    ),
                     ProfilePicture(
                       profileImgBytes: profileImgBytes,
                       width: 50,
