@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
@@ -8,18 +9,11 @@ import 'package:flutter/material.dart';
 
 class PlantItemScreen extends StatelessWidget {
   final ValueNotifier<Uint8List?> profileImgBytes;
-  final String? plantId;
-  final String? commonName;
-  final String? scientificName;
-  final String? description;
-  final String? type;
+  final PlantModel plant;
+
   const PlantItemScreen({
     super.key,
-    this.plantId,
-    this.commonName,
-    this.scientificName,
-    this.description,
-    this.type,
+    required this.plant,
     required this.profileImgBytes,
   });
 
@@ -35,17 +29,13 @@ class PlantItemScreen extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: Colors.white)),
-                    Image.asset(
-                      "assets/images/logo-small.png",
-                      height: 45,
-                      fit: BoxFit.contain,
+                      onPressed: () => Navigator.pop(context),
+                      icon:
+                          const Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
+                    Image.asset("assets/images/logo-small.png", height: 45),
                     ProfilePicture(
                       profileImgBytes: profileImgBytes,
                       width: 50,
@@ -60,84 +50,45 @@ class PlantItemScreen extends StatelessWidget {
         ),
       ),
       bottomSheet: BottomSheet(
-          onClosing: () {},
-          builder: (context) {
-            return SizedBox(
-              width: double.infinity,
-              height: 350,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  spacing: 18,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
+        onClosing: () {},
+        builder: (context) => SizedBox(
+          height: 350,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(plant.commonName,
+                    style: kSmallTextStyle.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
+                Text(plant.scientificName,
+                    style: kXXSmallTextStyle.copyWith(
+                        color: Colors.black, fontStyle: FontStyle.italic)),
+                const SizedBox(height: 16),
+                Text("Description",
+                    style: kSmallTextStyle.copyWith(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
+                Text(plant.description,
+                    style: kXXSmallTextStyle.copyWith(color: kGrayColor400)),
+                const SizedBox(height: 16),
+                Row(
+                  spacing: 16,
                   children: [
-                    Column(
-                        spacing: 8,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            commonName!,
-                            textAlign: TextAlign.left,
-                            style: kSmallTextStyle.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            scientificName!,
-                            style: kXXSmallTextStyle.copyWith(
-                              color: Colors.black,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ]),
-                    Column(
-                        spacing: 8,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Description",
-                            textAlign: TextAlign.left,
-                            style: kSmallTextStyle.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          ),
-                          Text(
-                            description!,
-                            style: kXXSmallTextStyle.copyWith(
-                              color: kGrayColor400,
-                            ),
-                          ),
-                        ]),
-                    Row(
-                      spacing: 16,
-                      children: [
-                        Text(
-                          "Type:",
-                          textAlign: TextAlign.left,
-                          style: kSmallTextStyle.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                        Text(
-                          type!.capitalize(),
-                          style: kSmallTextStyle.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        )
-                      ],
-                    ),
+                    Text("Type:",
+                        style: kSmallTextStyle.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    Text(plant.type.map((t) => t.capitalize()).join(',\n'),
+                        style: kSmallTextStyle.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
                   ],
                 ),
-              ),
-            );
-          }),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
