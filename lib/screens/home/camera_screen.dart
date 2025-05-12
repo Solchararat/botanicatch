@@ -3,16 +3,16 @@ import 'dart:developer';
 import 'dart:ui';
 import 'dart:io';
 import 'package:botanicatch/models/plant_model.dart';
-import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/services/classification/classification_service.dart';
 import 'package:botanicatch/services/db/db_service.dart';
+import 'package:botanicatch/services/storage/storage_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 Future<String> _encodeImg(String filePath) async {
   final File file = File(filePath);
@@ -33,11 +33,14 @@ class _CameraScreenState extends State<CameraScreen> {
   late ValueNotifier<bool> _isInitialized;
   late ValueNotifier<bool> _hasError;
   late ValueNotifier<XFile?> _capturedImage;
+  late ValueNotifier<bool> _isFlashOn;
+
   static const String _endpointURL = "http://192.168.100.42:8000/classify";
   static final ClassificationService _classificationService =
       ClassificationService(endpointUrl: _endpointURL);
-  late UserModel? _user;
-  late ValueNotifier<bool> _isFlashOn;
+  static final StorageService _storageService = StorageService.instance;
+  static final String? _uid = AuthService.instance.currentUser?.uid;
+  static final DatabaseService _databaseService = DatabaseService(uid: _uid!);
 
   @override
   void initState() {
@@ -47,12 +50,6 @@ class _CameraScreenState extends State<CameraScreen> {
     _isFlashOn = ValueNotifier<bool>(false);
     _capturedImage = ValueNotifier<XFile?>(null);
     _initializeFuture = _initializeCamera();
-  }
-
-  @override
-  void didChangeDependencies() {
-    _user = Provider.of<UserModel?>(context);
-    super.didChangeDependencies();
   }
 
   @override
@@ -77,7 +74,12 @@ class _CameraScreenState extends State<CameraScreen> {
         final newData = jsonDecode(response.body);
         log("data: $newData");
         final plant = PlantModel.fromJson(newData);
-        await DatabaseService(uid: _user!.uid!).addPlantData(plant);
+        await Future.wait([
+          _databaseService.addPlantData(plant),
+          _storageService.uploadFile(
+              "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg",
+              picture)
+        ]);
       }
     } catch (e) {
       debugPrint('Error capturing image: $e');
