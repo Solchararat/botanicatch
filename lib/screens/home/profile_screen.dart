@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:botanicatch/models/user_model.dart';
@@ -22,6 +23,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ValueNotifier<Uint8List?> _profileImgBytes;
   late final ValueNotifier<Uint8List?> _bannerImgBytes;
+  late UserModel? _user;
 
   @override
   void initState() {
@@ -37,6 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _user = Provider.of<UserModel?>(context);
+  }
+
   // mock function for generating last activities
   List<Widget> _fetchLastActivities() {
     return List.generate(3, (_) => const ActivityItem());
@@ -44,9 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
-
-    return user == null || user.username == null || user.username!.isEmpty
+    return _user == null || _user?.username == null || _user!.username!.isEmpty
         ? const BackgroundImage(
             imagePath: "assets/images/home-bg.jpg",
             child: Center(
@@ -80,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         // to make the name centered
                         const SizedBox(width: 16),
                         Text(
-                          user.username ?? "null",
+                          _user?.username ?? "null",
                           style: kSmallTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

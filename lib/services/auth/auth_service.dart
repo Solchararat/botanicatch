@@ -17,17 +17,11 @@ class AuthService {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   Stream<UserModel?> get user =>
-      _auth.authStateChanges().asyncMap((User? firebaseUser) async {
-        if (firebaseUser == null) {
-          return null;
-        }
+      _auth.authStateChanges().asyncExpand((User? user) {
+        if (user == null) return Stream.value(null);
 
-        try {
-          final dbService = DatabaseService(uid: firebaseUser.uid);
-          return await dbService.userModel.first;
-        } catch (e) {
-          return UserModel(uid: firebaseUser.uid, email: firebaseUser.email);
-        }
+        final db = DatabaseService(uid: user.uid);
+        return db.userModel.map((model) => model);
       });
 
   User? get currentUser => _auth.currentUser;
