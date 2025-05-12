@@ -28,7 +28,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  late CameraController controller;
+  late CameraController _controller;
   late Future<void> _initializeFuture;
   late ValueNotifier<bool> _isInitialized;
   late ValueNotifier<bool> _hasError;
@@ -37,12 +37,14 @@ class _CameraScreenState extends State<CameraScreen> {
   static final ClassificationService _classificationService =
       ClassificationService(endpointUrl: _endpointURL);
   late UserModel? _user;
+  late ValueNotifier<bool> _isFlashOn;
 
   @override
   void initState() {
     super.initState();
     _isInitialized = ValueNotifier<bool>(false);
     _hasError = ValueNotifier<bool>(false);
+    _isFlashOn = ValueNotifier<bool>(false);
     _capturedImage = ValueNotifier<XFile?>(null);
     _initializeFuture = _initializeCamera();
   }
@@ -55,14 +57,17 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     _capturedImage.dispose();
+    _isInitialized.dispose();
+    _hasError.dispose();
+    _isFlashOn.dispose();
     super.dispose();
   }
 
   Future<void> _takePicture() async {
     try {
-      final XFile picture = await controller.takePicture();
+      final XFile picture = await _controller.takePicture();
       _capturedImage.value = picture;
       final String base64Image = await compute(_encodeImg, picture.path);
       final response = await _classificationService.processClassification(
@@ -88,13 +93,13 @@ class _CameraScreenState extends State<CameraScreen> {
       }
 
       final firstCamera = cameras.first;
-      controller = CameraController(
+      _controller = CameraController(
         firstCamera,
         ResolutionPreset.max,
         enableAudio: false,
       );
 
-      await controller.initialize();
+      await _controller.initialize();
 
       if (!mounted) return;
 
@@ -148,92 +153,119 @@ class _CameraScreenState extends State<CameraScreen> {
               if (_isInitialized.value) {
                 final size = MediaQuery.of(context).size;
                 final deviceRatio = size.width / size.height;
-                final xScale = controller.value.aspectRatio / deviceRatio;
+                final xScale = _controller.value.aspectRatio / deviceRatio;
                 final double yScale = 1;
-                return Stack(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: deviceRatio,
-                      child: Transform(
-                        alignment: Alignment.center,
-                        transform:
-                            Matrix4.diagonal3Values(xScale - 1, yScale, 1),
-                        child: CameraPreview(controller),
+                return SafeArea(
+                  bottom: false,
+                  child: Stack(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: deviceRatio,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform:
+                              Matrix4.diagonal3Values(xScale - 1, yScale, 1),
+                          child: CameraPreview(_controller),
+                        ),
                       ),
-                    ),
-                    RepaintBoundary(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: ClipRRect(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                                sigmaX: 1.5,
-                                sigmaY: 1.5,
-                                tileMode: TileMode.decal),
-                            child: Container(
-                              height: 230,
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.4),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: _takePicture,
-                                    child: Container(
-                                      margin:
-                                          const EdgeInsets.only(bottom: 100),
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        color: Colors.transparent,
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 5,
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: ValueListenableBuilder(
+                            valueListenable: _isFlashOn,
+                            builder: (context, flash, _) {
+                              return IconButton(
+                                icon: Icon(
+                                  flash ? Icons.flash_on : Icons.flash_off,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    await _controller.setFlashMode(flash
+                                        ? FlashMode.off
+                                        : FlashMode.torch);
+                                    _isFlashOn.value = !_isFlashOn.value;
+                                  } catch (e) {
+                                    log("ERROR: $e");
+                                  }
+                                },
+                              );
+                            }),
+                      ),
+                      RepaintBoundary(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: ClipRRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                  sigmaX: 1.5,
+                                  sigmaY: 1.5,
+                                  tileMode: TileMode.decal),
+                              child: Container(
+                                height: 230,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.4),
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: _takePicture,
+                                      child: Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 100),
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          color: Colors.transparent,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 5,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Positioned(
-                                    left: 16,
-                                    child: ValueListenableBuilder<XFile?>(
-                                      valueListenable: _capturedImage,
-                                      builder: (context, image, _) {
-                                        if (image == null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Container(
-                                          margin: const EdgeInsets.only(
-                                              bottom: 100),
-                                          width: 60,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.white, width: 2),
-                                          ),
-                                          child: ClipOval(
-                                            child: Image.file(
-                                              File(image.path),
-                                              fit: BoxFit.cover,
+                                    Positioned(
+                                      left: 16,
+                                      child: ValueListenableBuilder<XFile?>(
+                                        valueListenable: _capturedImage,
+                                        builder: (context, image, _) {
+                                          if (image == null) {
+                                            return const SizedBox.shrink();
+                                          }
+                                          return Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 100),
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                            child: ClipOval(
+                                              child: Image.file(
+                                                File(image.path),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 );
               }
 
