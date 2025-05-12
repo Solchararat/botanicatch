@@ -52,7 +52,7 @@ class StorageService {
       final imageBytes = await file.readAsBytes();
       _cache[fileName] = imageBytes;
 
-      Future.wait([
+      await Future.wait([
         _storage.ref(fileName).putData(imageBytes),
         _saveToLocal(fileName, imageBytes)
       ]);
@@ -85,6 +85,7 @@ class StorageService {
 
   Future<String> getDownloadURL(String fileName) async {
     try {
+      log(fileName);
       final ref = _storage.ref(fileName);
       return await ref.getDownloadURL();
     } catch (e) {
