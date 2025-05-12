@@ -36,6 +36,7 @@ class _ProfileBannerState extends State<ProfileBanner> {
     widget.bannerImgBytes.value = imageBytes;
 
     await _storage.uploadFile(_filePath, image);
+    await _getBannerPicture();
   }
 
   Future<void> _getBannerPicture() async {
@@ -48,89 +49,76 @@ class _ProfileBannerState extends State<ProfileBanner> {
     }
   }
 
+  Widget _buildBannerContainer(
+      {required bool isEditable, Uint8List? imageBytes}) {
+    return Container(
+      height: isEditable ? 100 : 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: isEditable ? BorderRadius.circular(10) : null,
+        color:
+            isEditable && imageBytes != null ? Colors.black : Colors.grey[300],
+        image: imageBytes != null
+            ? DecorationImage(
+                image: Image.memory(imageBytes, fit: BoxFit.cover).image,
+                fit: BoxFit.cover,
+                opacity: isEditable ? 0.5 : 1.0,
+              )
+            : null,
+      ),
+      child: isEditable
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.camera_alt_outlined,
+                    color: imageBytes != null ? Colors.white : Colors.black38,
+                    size: 30,
+                  ),
+                  Text(
+                    "Tap to change banner image",
+                    style: kXXSmallTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: imageBytes != null ? Colors.white : Colors.black38,
+                    ),
+                  )
+                ],
+              ),
+            )
+          : (imageBytes == null
+              ? const Center(
+                  child: Icon(
+                    Icons.image,
+                    color: Colors.black38,
+                    size: 30,
+                  ),
+                )
+              : null),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return widget.isEditable
-        ? Stack(
-            children: [
-              GestureDetector(
-                onTap: _onBannerTapped,
-                child: ValueListenableBuilder(
-                    valueListenable: widget.bannerImgBytes,
-                    builder: (_, imageBytes, __) {
-                      return Container(
-                        height: 100,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: imageBytes != null
-                              ? Colors.black
-                              : Colors.grey[300],
-                          image: imageBytes != null
-                              ? DecorationImage(
-                                  opacity: .5,
-                                  image: Image.memory(
-                                    imageBytes,
-                                    fit: BoxFit.cover,
-                                  ).image,
-                                  fit: BoxFit.cover)
-                              : null,
-                        ),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.camera_alt_outlined,
-                                color: imageBytes != null
-                                    ? Colors.white
-                                    : Colors.black38,
-                                size: 30,
-                              ),
-                              Text(
-                                "Tap to change banner image",
-                                style: kXXSmallTextStyle.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: imageBytes != null
-                                        ? Colors.white
-                                        : Colors.black38),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-              ),
-            ],
-          )
-        : ValueListenableBuilder(
-            valueListenable: widget.bannerImgBytes,
-            builder: (_, imageBytes, __) {
-              return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    image: imageBytes != null
-                        ? DecorationImage(
-                            image: Image.memory(
-                              imageBytes,
-                              fit: BoxFit.cover,
-                            ).image,
-                            fit: BoxFit.cover)
-                        : null,
-                  ),
-                  child: imageBytes == null
-                      ? const Center(
-                          child: Icon(
-                            Icons.image,
-                            color: Colors.black38,
-                            size: 30,
-                          ),
-                        )
-                      : null);
-            });
+    return ValueListenableBuilder(
+      valueListenable: widget.bannerImgBytes,
+      builder: (_, imageBytes, __) {
+        final container = _buildBannerContainer(
+          isEditable: widget.isEditable,
+          imageBytes: imageBytes,
+        );
+
+        return widget.isEditable
+            ? GestureDetector(
+                onTap: () async {
+                  await _onBannerTapped();
+                },
+                child: container,
+              )
+            : container;
+      },
+    );
   }
 }

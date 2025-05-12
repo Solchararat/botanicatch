@@ -41,6 +41,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     widget.profileImgBytes.value = imageBytes;
 
     await _storage.uploadFile(_filePath, image);
+    await _getProfilePicture();
   }
 
   Future<void> _getProfilePicture() async {
@@ -53,48 +54,63 @@ class _ProfilePictureState extends State<ProfilePicture> {
     }
   }
 
+  Widget _buildProfileContainer(
+      {required bool isEditable, Uint8List? imageBytes}) {
+    return Container(
+      height: widget.height,
+      width: widget.width,
+      decoration: BoxDecoration(
+        color:
+            isEditable && imageBytes != null ? Colors.black : Colors.grey[300],
+        border: isEditable ? null : Border.all(color: kGreenColor500, width: 3),
+        shape: BoxShape.circle,
+        image: imageBytes != null
+            ? DecorationImage(
+                image: Image.memory(imageBytes, fit: BoxFit.cover).image,
+                fit: BoxFit.cover,
+                opacity: isEditable ? 0.5 : 1.0,
+              )
+            : null,
+      ),
+      child: isEditable
+          ? Center(
+              child: Icon(
+                Icons.camera_alt_outlined,
+                color: imageBytes != null ? Colors.white : Colors.black38,
+                size: 25,
+              ),
+            )
+          : (imageBytes == null
+              ? const Center(
+                  child: Icon(
+                    Icons.person_rounded,
+                    color: Colors.black38,
+                    size: 25,
+                  ),
+                )
+              : null),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return widget.isEditable
-        ? Row(
+    return ValueListenableBuilder(
+      valueListenable: widget.profileImgBytes,
+      builder: (_, imageBytes, __) {
+        final container = _buildProfileContainer(
+          isEditable: widget.isEditable,
+          imageBytes: imageBytes,
+        );
+
+        if (widget.isEditable) {
+          return Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: _onProfileTapped,
-                child: ValueListenableBuilder(
-                  valueListenable: widget.profileImgBytes,
-                  builder: (_, imageBytes, __) {
-                    return Container(
-                      height: widget.height,
-                      width: widget.width,
-                      decoration: BoxDecoration(
-                        color: imageBytes != null
-                            ? Colors.black
-                            : Colors.grey[300],
-                        shape: BoxShape.circle,
-                        image: imageBytes != null
-                            ? DecorationImage(
-                                opacity: .5,
-                                image: Image.memory(
-                                  imageBytes,
-                                  fit: BoxFit.cover,
-                                ).image,
-                                fit: BoxFit.cover)
-                            : null,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: imageBytes != null
-                              ? Colors.white
-                              : Colors.black38,
-                          size: 25,
-                        ),
-                      ),
-                    );
+                  onTap: () async {
+                    await _onProfileTapped();
                   },
-                ),
-              ),
+                  child: container),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -105,47 +121,22 @@ class _ProfilePictureState extends State<ProfilePicture> {
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
-                      softWrap: true,
                     ),
                     Text(
                       "Recommended: Square image, at least 400x400 pixels",
                       style: kXXSmallTextStyle.copyWith(
-                          fontSize: 11, color: Colors.grey[300]),
-                      softWrap: true,
+                        fontSize: 11,
+                        color: Colors.grey[300],
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
-          )
-        : ValueListenableBuilder(
-            valueListenable: widget.profileImgBytes,
-            builder: (_, imageBytes, __) {
-              return Container(
-                  height: widget.height,
-                  width: widget.width,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: kGreenColor500, width: 3),
-                    color: Colors.grey[300],
-                    shape: BoxShape.circle,
-                    image: imageBytes != null
-                        ? DecorationImage(
-                            image: Image.memory(
-                              imageBytes,
-                              fit: BoxFit.cover,
-                            ).image,
-                            fit: BoxFit.cover)
-                        : null,
-                  ),
-                  child: imageBytes == null
-                      ? const Center(
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Colors.black38,
-                            size: 25,
-                          ),
-                        )
-                      : null);
-            });
+          );
+        }
+        return container;
+      },
+    );
   }
 }
