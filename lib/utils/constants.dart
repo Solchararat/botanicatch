@@ -49,6 +49,63 @@ const kXXSmallTextStyle = TextStyle(
   color: Colors.white,
 );
 
+// Plant types text styles
+
+BoxDecoration medicinalType = BoxDecoration(
+  color: const Color(0xFFFF6B8B),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration ornamentalType = BoxDecoration(
+  color: const Color(0xFF9C89B8),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration edibleType = BoxDecoration(
+  color: const Color(0xFFF0A202),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration poisonousType = BoxDecoration(
+  color: const Color(0xFF7851A9),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration nativeType = BoxDecoration(
+  color: const Color(0xFF2D936C),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration invasiveType = BoxDecoration(
+  color: const Color(0xFFD62246),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration treeType = BoxDecoration(
+  color: const Color(0xFF3A7D44),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration herbType = BoxDecoration(
+  color: const Color(0xFF9BC53D),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration aquaticType = BoxDecoration(
+  color: const Color(0xFF5BC0EB),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration climberType = BoxDecoration(
+  color: const Color(0xFF8CB369),
+  borderRadius: BorderRadius.circular(50),
+);
+
+BoxDecoration defaultType = BoxDecoration(
+  color: const Color(0xFFB6B6A7),
+  borderRadius: BorderRadius.circular(50),
+);
+
 // Outline Border
 const kOutlineInputBorder = OutlineInputBorder(
   borderRadius: BorderRadius.all(
