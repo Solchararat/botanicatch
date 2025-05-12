@@ -66,7 +66,10 @@ class _ProfilePictureState extends State<ProfilePicture> {
         shape: BoxShape.circle,
         image: imageBytes != null
             ? DecorationImage(
-                image: Image.memory(imageBytes, fit: BoxFit.cover).image,
+                image: Image.memory(
+                  imageBytes,
+                  fit: BoxFit.cover,
+                ).image,
                 fit: BoxFit.cover,
                 opacity: isEditable ? 0.5 : 1.0,
               )

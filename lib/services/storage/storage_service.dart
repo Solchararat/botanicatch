@@ -50,9 +50,12 @@ class StorageService {
   Future<void> uploadFile(String fileName, XFile file) async {
     try {
       final imageBytes = await file.readAsBytes();
-      await _storage.ref(fileName).putData(imageBytes);
       _cache[fileName] = imageBytes;
-      await _saveToLocal(fileName, imageBytes);
+
+      Future.wait([
+        _storage.ref(fileName).putData(imageBytes),
+        _saveToLocal(fileName, imageBytes)
+      ]);
     } catch (e) {
       log("Could not upload file.");
     }
