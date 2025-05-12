@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/screens/home/plant_item_screen.dart';
 import 'package:botanicatch/utils/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PlantItem extends StatelessWidget {
@@ -31,48 +32,59 @@ class PlantItem extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        width: 170,
-        height: 150,
-        decoration: BoxDecoration(
-          gradient: const RadialGradient(
-            colors: [kGreenColor100, kGreenColor500],
-            radius: 0.8,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(
-              image: NetworkImage(plant.imageURL), fit: BoxFit.cover),
+      child: CachedNetworkImage(
+        imageUrl: plant.imageURL,
+        placeholder: (context, url) =>
+            const CircularProgressIndicator(color: kGreenColor300),
+        errorWidget: (context, url, error) => const Icon(
+          Icons.error,
+          color: Colors.red,
         ),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 30,
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            decoration: const BoxDecoration(
-              color: kGreenColor400,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
+        imageBuilder: (context, imageProvider) => Container(
+          width: 170,
+          height: 150,
+          decoration: BoxDecoration(
+            gradient: const RadialGradient(
+              colors: [kGreenColor100, kGreenColor500],
+              radius: 0.8,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 8,
-              children: [
-                Text(
-                  "#${plantId ?? ''}",
-                  style: kXXSmallTextStyle,
-                  overflow: TextOverflow.ellipsis,
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 30,
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              decoration: const BoxDecoration(
+                color: kGreenColor400,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
-                Expanded(
-                  child: Text(
-                    plant.commonName,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 8,
+                children: [
+                  Text(
+                    "#${plantId ?? ''}",
                     style: kXXSmallTextStyle,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Text(
+                      plant.commonName,
+                      style: kXXSmallTextStyle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

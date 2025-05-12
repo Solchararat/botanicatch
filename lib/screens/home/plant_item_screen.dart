@@ -5,6 +5,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/profile/profile_picture.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PlantItemScreen extends StatelessWidget {
@@ -150,12 +151,16 @@ class PlantItemScreen extends StatelessWidget {
     return Scaffold(
       body: BackgroundImage(
         imagePath: "assets/images/home-bg.jpg",
+        hasPadding: false,
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Row(
+          left: false,
+          right: false,
+          child: Column(
+            spacing: 8,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
@@ -171,9 +176,18 @@ class PlantItemScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                Image.network(plant.imageURL),
-              ],
-            ),
+              ),
+              CachedNetworkImage(
+                imageUrl: plant.imageURL,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(color: kGreenColor300),
+                errorWidget: (context, url, error) => const Icon(
+                  Icons.error,
+                  color: kGreenColor500,
+                ),
+              )
+            ],
           ),
         ),
       ),
