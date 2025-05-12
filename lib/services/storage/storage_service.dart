@@ -79,4 +79,14 @@ class StorageService {
       return null;
     }
   }
+
+  Future<String> getDownloadURL(String fileName) async {
+    try {
+      final ref = _storage.ref(fileName);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      log("Failed to get download URL: $e");
+      rethrow;
+    }
+  }
 }

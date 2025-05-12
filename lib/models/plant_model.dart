@@ -6,6 +6,7 @@ class PlantModel {
   final String description;
   final List<String> type;
   final int confidence;
+  String imageURL;
 
   PlantModel({
     required this.plantId,
@@ -15,18 +16,19 @@ class PlantModel {
     required this.description,
     required this.type,
     required this.confidence,
+    required this.imageURL,
   });
 
   factory PlantModel.fromJson(Map<String, dynamic> json) {
     return PlantModel(
-      plantId: json['plant_id'] ?? 0,
-      scientificName: json['scientific_name'] ?? '',
-      commonName: json['common_name'] ?? '',
-      family: json['family'] ?? '',
-      description: json['description'] ?? '',
-      type: List<String>.from(json['type'] ?? []),
-      confidence: json['confidence'] ?? 0,
-    );
+        plantId: json['plant_id'] ?? 0,
+        scientificName: json['scientific_name'] ?? '',
+        commonName: json['common_name'] ?? '',
+        family: json['family'] ?? '',
+        description: json['description'] ?? '',
+        type: List<String>.from(json['type'] ?? []),
+        confidence: json['confidence'] ?? 0,
+        imageURL: json["imageURL"] ?? "");
   }
 
   Map<String, dynamic> toJson() => {
@@ -37,5 +39,6 @@ class PlantModel {
         'description': description,
         'type': type,
         'confidence': confidence,
+        'imageURL': imageURL,
       };
 }

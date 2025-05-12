@@ -40,6 +40,8 @@ class PlantItem extends StatelessWidget {
             radius: 0.8,
           ),
           borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+              image: NetworkImage(plant.imageURL), fit: BoxFit.cover),
         ),
         child: Align(
           alignment: Alignment.bottomCenter,

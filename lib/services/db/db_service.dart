@@ -72,6 +72,7 @@ class DatabaseService {
       type: plant.type,
       confidence: plant.confidence,
       plantId: nextId,
+      imageURL: plant.imageURL,
     ).toJson());
   }
 

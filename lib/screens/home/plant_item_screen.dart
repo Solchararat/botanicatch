@@ -171,7 +171,7 @@ class PlantItemScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                Image.asset("assets/images/new-plants.png"),
+                Image.network(plant.imageURL),
               ],
             ),
           ),

@@ -66,20 +66,25 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       final XFile picture = await _controller.takePicture();
       _capturedImage.value = picture;
+
       final String base64Image = await compute(_encodeImg, picture.path);
       final response = await _classificationService.processClassification(
           base64Image: base64Image);
 
       if (response != null && response.statusCode == 200) {
         final newData = jsonDecode(response.body);
-        log("data: $newData");
         final plant = PlantModel.fromJson(newData);
-        await Future.wait([
-          _databaseService.addPlantData(plant),
-          _storageService.uploadFile(
-              "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg",
-              picture)
-        ]);
+
+        final String imagePath =
+            "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg";
+
+        await _storageService.uploadFile(imagePath, picture);
+
+        final String imageUrl = await _storageService.getDownloadURL(imagePath);
+
+        plant.imageURL = imageUrl;
+
+        await _databaseService.addPlantData(plant);
       }
     } catch (e) {
       debugPrint('Error capturing image: $e');
