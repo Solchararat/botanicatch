@@ -53,6 +53,33 @@ class DatabaseService {
   }
 
   Future<void> addPlantData(PlantModel plant) async {
-    await userCollection.doc(uid).collection('plants').add(plant.toJson());
+    final CollectionReference plantsRef =
+        userCollection.doc(uid).collection('plants');
+    final QuerySnapshot snapshot =
+        await plantsRef.orderBy('plant_id', descending: true).limit(1).get();
+
+    int nextId = 1;
+    if (snapshot.docs.isNotEmpty) {
+      final latestId = snapshot.docs.first.get('plant_id') as int? ?? 0;
+      nextId = latestId + 1;
+    }
+
+    await plantsRef.add(PlantModel(
+      scientificName: plant.scientificName,
+      commonName: plant.commonName,
+      family: plant.family,
+      description: plant.description,
+      type: plant.type,
+      confidence: plant.confidence,
+      plantId: nextId,
+    ).toJson());
+  }
+
+  Stream<List<QueryDocumentSnapshot>> get plantsStream {
+    return userCollection
+        .doc(uid)
+        .collection('plants')
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 }
