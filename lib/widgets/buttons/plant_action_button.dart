@@ -1,5 +1,6 @@
 import 'package:botanicatch/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PlantActionButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -65,10 +66,10 @@ class PlantActionButton extends StatelessWidget {
           Positioned(
             right: right,
             top: top,
-            child: Image.asset(
+            child: SvgPicture.asset(
               imagePath,
-              cacheWidth: cacheWidth,
-              cacheHeight: cacheHeight,
+              width: cacheWidth.toDouble(),
+              height: cacheHeight.toDouble(),
             ),
           ),
         ],

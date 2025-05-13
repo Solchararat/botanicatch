@@ -48,7 +48,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _resetNavBarVisibility();
 
     _screens = [
-      HomeScreen(profileImgBytes: _profileImgBytes),
+      HomeScreen(
+        profileImgBytes: _profileImgBytes,
+        onNavigate: _navigateOnPress,
+      ),
       ProfileScreen(profileImgBytes: _profileImgBytes),
       CameraScreen(profileImgBytes: _profileImgBytes),
       GardenScreen(profileImgBytes: _profileImgBytes),
