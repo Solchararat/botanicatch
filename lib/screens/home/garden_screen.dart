@@ -61,7 +61,10 @@ class _GardenScreenState extends State<GardenScreen> {
               stream: _plantsStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: kGreenColor300,
+                  ));
                 }
                 final plants = snapshot.data!;
                 if (orientation == Orientation.landscape) {
