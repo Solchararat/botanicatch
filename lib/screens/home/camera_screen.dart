@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'dart:ui';
 import 'dart:io';
 import 'package:botanicatch/models/plant_model.dart';
+import 'package:botanicatch/screens/home/plant_item_screen.dart';
 import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/services/classification/classification_service.dart';
 import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/services/storage/storage_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
+import 'package:botanicatch/widgets/progress-indicators/botanicatch_loading.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -21,7 +23,8 @@ Future<String> _encodeImg(String filePath) async {
 }
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  final ValueNotifier<Uint8List?> profileImgBytes;
+  const CameraScreen({super.key, required this.profileImgBytes});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -34,6 +37,8 @@ class _CameraScreenState extends State<CameraScreen> {
   late ValueNotifier<bool> _hasError;
   late ValueNotifier<XFile?> _capturedImage;
   late ValueNotifier<bool> _isFlashOn;
+  late ValueNotifier<bool> _isLoading;
+  late ValueNotifier<String> _loadingMessage;
 
   static const String _endpointURL = "http://192.168.100.42:8000/classify";
   static final ClassificationService _classificationService =
@@ -48,6 +53,11 @@ class _CameraScreenState extends State<CameraScreen> {
     _isInitialized = ValueNotifier<bool>(false);
     _hasError = ValueNotifier<bool>(false);
     _isFlashOn = ValueNotifier<bool>(false);
+    _loadingMessage = ValueNotifier<String>("Identifying plant species...");
+
+    // TODO: Change me
+    _isLoading = ValueNotifier<bool>(false);
+
     _capturedImage = ValueNotifier<XFile?>(null);
     _initializeFuture = _initializeCamera();
   }
@@ -59,32 +69,57 @@ class _CameraScreenState extends State<CameraScreen> {
     _isInitialized.dispose();
     _hasError.dispose();
     _isFlashOn.dispose();
+    _isLoading.dispose();
+    _loadingMessage.dispose();
     super.dispose();
   }
 
   Future<void> _takePicture() async {
     try {
+      _isLoading.value = true;
+      _loadingMessage.value = "Capturing image...";
+
       final XFile picture = await _controller.takePicture();
       _capturedImage.value = picture;
 
+      _loadingMessage.value = "Processing image...";
       final String base64Image = await compute(_encodeImg, picture.path);
+
+      _loadingMessage.value = "Identifying plant species...";
       final response = await _classificationService.processClassification(
           base64Image: base64Image);
 
       if (response != null && response.statusCode == 200) {
+        _loadingMessage.value = "Classification complete! Preparing data...";
         final newData = jsonDecode(response.body);
         final plant = PlantModel.fromJson(newData);
 
+        _loadingMessage.value = "Uploading image...";
         final String imagePath =
             "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg";
 
         await _storageService.uploadFile(imagePath, picture);
 
+        _loadingMessage.value = "Finalizing...";
         final String imageUrl = await _storageService.getDownloadURL(imagePath);
-
         plant.imageURL = imageUrl;
 
         await _databaseService.addPlantData(plant);
+        _isLoading.value = false;
+
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PlantItemScreen(
+                        plant: plant,
+                        profileImgBytes: widget.profileImgBytes,
+                      )));
+        }
+      } else {
+        _loadingMessage.value = "Error processing image. Please try again.";
+        await Future.delayed(const Duration(seconds: 2));
+        _isLoading.value = false;
       }
     } catch (e) {
       debugPrint('Error capturing image: $e');
@@ -217,23 +252,31 @@ class _CameraScreenState extends State<CameraScreen> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    InkWell(
-                                      onTap: _takePicture,
-                                      child: Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 100),
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          color: Colors.transparent,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 5,
+                                    ValueListenableBuilder<bool>(
+                                      valueListenable: _isLoading,
+                                      builder: (_, isLoading, __) {
+                                        return InkWell(
+                                          onTap:
+                                              isLoading ? null : _takePicture,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 100),
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                              color: Colors.transparent,
+                                              border: Border.all(
+                                                color: isLoading
+                                                    ? Colors.grey
+                                                    : Colors.white,
+                                                width: 5,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
                                     ),
                                     Positioned(
                                       left: 16,
@@ -270,7 +313,20 @@ class _CameraScreenState extends State<CameraScreen> {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _isLoading,
+                        builder: (_, isLoading, __) => isLoading
+                            ? ValueListenableBuilder<String>(
+                                valueListenable: _loadingMessage,
+                                builder: (context, message, _) {
+                                  return BotanicatchLoading(
+                                    initialMessage: message,
+                                  );
+                                },
+                              )
+                            : const SizedBox.shrink(),
+                      ),
                     ],
                   ),
                 );
