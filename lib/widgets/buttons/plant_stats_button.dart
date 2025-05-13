@@ -1,5 +1,9 @@
+import 'package:botanicatch/services/db/db_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PlantStatsButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -10,6 +14,9 @@ class PlantStatsButton extends StatelessWidget {
   final double bottom;
   final int cacheWidth;
   final int cacheHeight;
+  final bool useDynamicSubheading;
+  final String dynamicSubheadingTemplate;
+
   const PlantStatsButton({
     super.key,
     required this.onTap,
@@ -20,10 +27,14 @@ class PlantStatsButton extends StatelessWidget {
     required this.bottom,
     required this.cacheWidth,
     required this.cacheHeight,
+    this.useDynamicSubheading = false,
+    this.dynamicSubheadingTemplate = "",
   });
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
     return InkWell(
       onTap: onTap,
       child: Stack(
@@ -44,21 +55,41 @@ class PlantStatsButton extends StatelessWidget {
                   style: kSmallTextStyle.copyWith(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  subheading,
-                  style: kXXSmallTextStyle.copyWith(
-                      color: kGrayColor400, fontWeight: FontWeight.bold),
-                )
+                if (useDynamicSubheading && uid != null)
+                  StreamBuilder<List<QueryDocumentSnapshot>>(
+                    stream: DatabaseService(uid: uid).plantsStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text("Loading...");
+                      }
+                      if (snapshot.hasError) {
+                        return Text("Error");
+                      }
+                      int count = snapshot.data?.length ?? 0;
+                      return Text(
+                        dynamicSubheadingTemplate.replaceAll(
+                            "{count}", count.toString()),
+                        style: kXXSmallTextStyle.copyWith(
+                            color: kGrayColor400, fontWeight: FontWeight.bold),
+                      );
+                    },
+                  )
+                else
+                  Text(
+                    subheading,
+                    style: kXXSmallTextStyle.copyWith(
+                        color: kGrayColor400, fontWeight: FontWeight.bold),
+                  ),
               ],
             ),
           ),
           Positioned(
             right: right,
             bottom: bottom,
-            child: Image.asset(
+            child: SvgPicture.asset(
               imagePath,
-              cacheWidth: cacheWidth,
-              cacheHeight: cacheHeight,
+              width: cacheWidth.toDouble(),
+              height: cacheHeight.toDouble(),
             ),
           ),
         ],
