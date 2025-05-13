@@ -1,5 +1,6 @@
 import 'package:botanicatch/widgets/profile/section_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AchievementBadges extends StatelessWidget {
   const AchievementBadges({super.key});
@@ -18,10 +19,10 @@ class AchievementBadges extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 12,
             children: [
-              Image.asset("assets/images/badge.png"),
-              Image.asset("assets/images/badge.png"),
-              Image.asset("assets/images/badge.png"),
-              Image.asset("assets/images/badge.png"),
+              SvgPicture.asset("assets/images/badge.svg"),
+              SvgPicture.asset("assets/images/badge.svg"),
+              SvgPicture.asset("assets/images/badge.svg"),
+              SvgPicture.asset("assets/images/badge.svg"),
             ],
           ),
         ],
