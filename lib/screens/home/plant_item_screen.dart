@@ -127,7 +127,7 @@ class PlantItemScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: climberType,
             child: Text(
-              type.capitalize(),
+              "Vine",
               style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),

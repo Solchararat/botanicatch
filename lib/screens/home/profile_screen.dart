@@ -13,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final ValueNotifier<Uint8List?> profileImgBytes;
+
+  const ProfileScreen({super.key, required this.profileImgBytes});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -21,20 +23,17 @@ class ProfileScreen extends StatefulWidget {
 // TODO: Show modal to edit name and profile picture on tap of the edit button
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late final ValueNotifier<Uint8List?> _profileImgBytes;
   late final ValueNotifier<Uint8List?> _bannerImgBytes;
   late UserModel? _user;
 
   @override
   void initState() {
     super.initState();
-    _profileImgBytes = ValueNotifier(null);
     _bannerImgBytes = ValueNotifier(null);
   }
 
   @override
   void dispose() {
-    _profileImgBytes.dispose();
     _bannerImgBytes.dispose();
     super.dispose();
   }
@@ -75,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   spacing: 16,
                   children: [
                     ProfileHeader(
-                      profileImgBytes: _profileImgBytes,
+                      profileImgBytes: widget.profileImgBytes,
                       bannerImgBytes: _bannerImgBytes,
                     ),
                     Row(
@@ -96,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             showDialog(
                                 context: context,
                                 builder: (context) => EditProfileModal(
-                                      profileImgBytes: _profileImgBytes,
+                                      profileImgBytes: widget.profileImgBytes,
                                       bannerImgBytes: _bannerImgBytes,
                                     ));
                           },

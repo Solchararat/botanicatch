@@ -13,14 +13,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class GardenScreen extends StatefulWidget {
-  const GardenScreen({super.key});
+  final ValueNotifier<Uint8List?> profileImgBytes;
+  const GardenScreen({super.key, required this.profileImgBytes});
 
   @override
   State<GardenScreen> createState() => _GardenScreenState();
 }
 
 class _GardenScreenState extends State<GardenScreen> {
-  late final ValueNotifier<Uint8List?> _profileImgBytes;
   late Stream<List<QueryDocumentSnapshot>> _plantsStream;
   UserModel? _user;
 
@@ -40,25 +40,13 @@ class _GardenScreenState extends State<GardenScreen> {
     super.didChangeDependencies();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _profileImgBytes = ValueNotifier<Uint8List?>(null);
-  }
-
-  @override
-  void dispose() {
-    _profileImgBytes.dispose();
-    super.dispose();
-  }
-
   Widget _buildItem(
       BuildContext context, int index, QueryDocumentSnapshot doc) {
     final plant = PlantModel.fromJson(doc.data() as Map<String, dynamic>);
     return PlantItem(
       plant: plant,
       plantId: plant.plantId.toString(),
-      profileImgBytes: _profileImgBytes,
+      profileImgBytes: widget.profileImgBytes,
     );
   }
 
@@ -104,7 +92,7 @@ class _GardenScreenState extends State<GardenScreen> {
               SvgPicture.asset("assets/images/botanicatch.svg",
                   height: _logoHeight),
               ProfilePicture(
-                profileImgBytes: _profileImgBytes,
+                profileImgBytes: widget.profileImgBytes,
                 width: _profilePicSize,
                 height: _profilePicSize,
               ),
@@ -175,7 +163,7 @@ class _GardenScreenState extends State<GardenScreen> {
                         height: _logoHeight,
                       ),
                       ProfilePicture(
-                        profileImgBytes: _profileImgBytes,
+                        profileImgBytes: widget.profileImgBytes,
                         width: _profilePicSize,
                         height: _profilePicSize,
                       ),

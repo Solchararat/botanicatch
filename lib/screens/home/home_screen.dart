@@ -10,28 +10,10 @@ import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  final ValueNotifier<Uint8List?> profileImgBytes;
+  const HomeScreen({super.key, required this.profileImgBytes});
   static final AuthService _auth = AuthService.instance;
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late final ValueNotifier<Uint8List?> _profileImgBytes;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileImgBytes = ValueNotifier<Uint8List?>(null);
-  }
-
-  @override
-  void dispose() {
-    _profileImgBytes.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 45,
                   ),
                   ProfilePicture(
-                    profileImgBytes: _profileImgBytes,
+                    profileImgBytes: profileImgBytes,
                     width: 50,
                     height: 50,
                   )
@@ -163,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextButton(
                       onPressed: () {
-                        HomeScreen._auth.signOut();
+                        _auth.signOut();
                       },
                       child: Text(
                         "Log Out",

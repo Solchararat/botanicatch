@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:botanicatch/screens/home/camera_screen.dart';
 import 'package:botanicatch/screens/home/garden_screen.dart';
@@ -19,15 +20,9 @@ class HomeWrapper extends StatefulWidget {
 class _HomeWrapperState extends State<HomeWrapper> {
   late final ValueNotifier<int> _currentScreenIndex;
   late final ValueNotifier<bool> _isNavBarVisible;
+  late final ValueNotifier<Uint8List?> _profileImgBytes;
+  late final List<Widget> _screens;
   Timer? _hideNavBarTimer;
-
-  static const List<Widget> _screens = [
-    HomeScreen(),
-    ProfileScreen(),
-    CameraScreen(),
-    GardenScreen(),
-    MapsScreen(),
-  ];
 
   void _navigateOnPress(int index) {
     _currentScreenIndex.value = index;
@@ -49,7 +44,16 @@ class _HomeWrapperState extends State<HomeWrapper> {
     super.initState();
     _currentScreenIndex = ValueNotifier<int>(0);
     _isNavBarVisible = ValueNotifier<bool>(true);
+    _profileImgBytes = ValueNotifier<Uint8List?>(null);
     _resetNavBarVisibility();
+
+    _screens = [
+      HomeScreen(profileImgBytes: _profileImgBytes),
+      ProfileScreen(profileImgBytes: _profileImgBytes),
+      CameraScreen(profileImgBytes: _profileImgBytes),
+      GardenScreen(profileImgBytes: _profileImgBytes),
+      const MapsScreen(),
+    ];
   }
 
   @override
@@ -57,6 +61,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _currentScreenIndex.dispose();
     _isNavBarVisible.dispose();
     _hideNavBarTimer?.cancel();
+    _profileImgBytes.dispose();
     super.dispose();
   }
 
