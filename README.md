@@ -76,5 +76,9 @@ User profile includes fun achievement titles like:
 - Native Mobile App (Android/iOS) 📲
 
 ---
+## 👷👷 Contributors
+
+- Kirsten Dwayne Dizon – Full Stack Developer Lead 
+- Arron Kian Parejas – Full Stack Developer
 
 Crafted with ❤️ by Solchararat Team
