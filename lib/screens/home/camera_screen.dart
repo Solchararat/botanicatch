@@ -44,7 +44,8 @@ class _CameraScreenState extends State<CameraScreen> {
   late ValueNotifier<bool> _isLoading;
   late ValueNotifier<String> _loadingMessage;
 
-  static const String _endpointURL = "http://192.168.100.42:8080/classify";
+  static const String _endpointURL =
+      "https://botanicatch-endpoint-1088611082530.us-central1.run.app/classify";
   static final ClassificationService _classificationService =
       ClassificationService(endpointUrl: _endpointURL);
   static final StorageService _storageService = StorageService.instance;
