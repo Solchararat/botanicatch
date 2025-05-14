@@ -86,10 +86,20 @@ class DatabaseService {
     }
   }
 
-  Stream<List<QueryDocumentSnapshot>> get plantsStream {
+  Stream<List<QueryDocumentSnapshot>> get plantsStreamDescending {
     return userCollection
         .doc(uid)
         .collection('plants')
+        .orderBy('plant_id', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
+  Stream<List<QueryDocumentSnapshot>> get plantsStreamAscending {
+    return userCollection
+        .doc(uid)
+        .collection('plants')
+        .orderBy('plant_id', descending: false)
         .snapshots()
         .map((snapshot) => snapshot.docs);
   }

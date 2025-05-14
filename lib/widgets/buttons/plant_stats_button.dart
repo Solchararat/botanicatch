@@ -57,7 +57,7 @@ class PlantStatsButton extends StatelessWidget {
                 ),
                 if (useDynamicSubheading && uid != null)
                   StreamBuilder<List<QueryDocumentSnapshot>>(
-                    stream: DatabaseService(uid: uid).plantsStream,
+                    stream: DatabaseService(uid: uid).plantsStreamAscending,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Text("Loading...");

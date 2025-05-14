@@ -35,7 +35,7 @@ class _GardenScreenState extends State<GardenScreen> {
     _user = Provider.of<UserModel?>(context);
     if (_user != null && _user!.uid != null) {
       final databaseService = DatabaseService(uid: _user!.uid!);
-      _plantsStream = databaseService.plantsStream;
+      _plantsStream = databaseService.plantsStreamAscending;
     }
     super.didChangeDependencies();
   }
