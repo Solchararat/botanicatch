@@ -60,10 +60,13 @@ class PlantStatsButton extends StatelessWidget {
                     stream: DatabaseService(uid: uid).plantsStreamAscending,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text("Loading...");
+                        return const Text(
+                          "Loading...",
+                          style: kXXSmallTextStyle,
+                        );
                       }
                       if (snapshot.hasError) {
-                        return Text("Error");
+                        return const Text("Error", style: kXXSmallTextStyle);
                       }
                       int count = snapshot.data?.length ?? 0;
                       return Text(

@@ -138,10 +138,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                     PlantStatsButton(
                       // TODO: Implement onTap feature
-                      onTap: () {},
+                      onTap: () => onNavigate(1),
                       useDynamicSubheading: false,
-                      subheading: "Check your plant's health",
-                      heading: "Diagnose",
+                      subheading: "Check your recent catches",
+                      heading: "View",
                       imagePath: "assets/images/diagnose-plant.svg",
                       cacheWidth: 160,
                       cacheHeight: 160,
