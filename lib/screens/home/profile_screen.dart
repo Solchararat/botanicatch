@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:botanicatch/models/badge_model.dart';
 import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/badges/badge_service.dart';
 import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
@@ -23,12 +25,12 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-// TODO: Show modal to edit name and profile picture on tap of the edit button
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ValueNotifier<Uint8List?> _bannerImgBytes;
   late UserModel? _user;
   late Stream<List<QueryDocumentSnapshot>> _plantsStream;
+  static final BadgeService _badgeService = BadgeService();
 
   @override
   void initState() {
@@ -65,12 +67,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         : Stack(
             children: [
-              // Background Image
               const BackgroundImage(
                 imagePath: "assets/images/home-bg.jpg",
                 hasPadding: false,
               ),
-
               SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

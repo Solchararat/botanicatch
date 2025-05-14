@@ -60,7 +60,7 @@ class _EditProfileModalState extends State<EditProfileModal> {
       child: SingleChildScrollView(
         child: Dialog(
           insetPadding: const EdgeInsets.all(16),
-          backgroundColor: kGreenColor400,
+          backgroundColor: const Color(0xFF2D936C),
           child: Container(
             width: double.infinity,
             constraints: const BoxConstraints(maxWidth: 320),

@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:botanicatch/models/badge_model.dart';
 import 'package:botanicatch/models/plant_model.dart';
+import 'package:botanicatch/models/user_model.dart';
 import 'package:botanicatch/screens/home/plant_item_screen.dart';
 import 'package:botanicatch/services/auth/auth_service.dart';
+import 'package:botanicatch/services/badges/badge_service.dart';
 import 'package:botanicatch/services/classification/classification_service.dart';
 import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/services/storage/storage_service.dart';
@@ -15,6 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 Future<String> _encodeImg(String filePath) async {
   final File file = File(filePath);
@@ -31,7 +35,6 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  // FIXME: Camera doesn't load on release builds
   late CameraController _controller;
   late Future<void> _initializeFuture;
   late ValueNotifier<bool> _isInitialized;
@@ -47,6 +50,7 @@ class _CameraScreenState extends State<CameraScreen> {
   static final StorageService _storageService = StorageService.instance;
   static final String? _uid = AuthService.instance.currentUser?.uid;
   static final DatabaseService _databaseService = DatabaseService(uid: _uid!);
+  static final BadgeService _badgeService = BadgeService();
 
   @override
   void initState() {
@@ -57,7 +61,6 @@ class _CameraScreenState extends State<CameraScreen> {
     _isFlashOn = ValueNotifier<bool>(false);
     _loadingMessage = ValueNotifier<String>("Identifying plant species...");
 
-    // TODO: Change me
     _isLoading = ValueNotifier<bool>(false);
 
     _capturedImage = ValueNotifier<XFile?>(null);
@@ -90,9 +93,11 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _processImage(XFile picture) async {
+    if (!mounted) return;
     _loadingMessage.value = "Processing image...";
     final String base64Image = await compute(_encodeImg, picture.path);
 
+    if (!mounted) return;
     _loadingMessage.value = "Identifying plant species...";
     final response = await _classificationService.processClassification(
         base64Image: base64Image);
@@ -102,33 +107,50 @@ class _CameraScreenState extends State<CameraScreen> {
       final newData = jsonDecode(response.body);
       final plant = PlantModel.fromJson(newData);
 
-      // TODO: Add exception handling when Gemini failed to send a valid JSON response
       if (plant.commonName.isEmpty || plant.scientificName.isEmpty) {
         throw Exception("ERROR: Gemini returned an invalid JSON format");
       }
 
+      if (!mounted) return;
       _loadingMessage.value = "Uploading image...";
       final String imagePath =
           "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg";
 
       await _storageService.uploadFile(imagePath, picture);
 
+      if (!mounted) return;
       _loadingMessage.value = "Finalizing...";
       final String imageUrl = await _storageService.getDownloadURL(imagePath);
       plant.imageURL = imageUrl;
-
       await _databaseService.addPlantData(plant);
-      _isLoading.value = false;
 
-      if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PlantItemScreen(
-                      plant: plant,
-                      profileImgBytes: widget.profileImgBytes,
-                    )));
+      if (!mounted) return;
+      _loadingMessage.value = "Checking achievements...";
+
+      final UserModel? currentUser =
+          Provider.of<UserModel?>(context, listen: false);
+
+      if (currentUser != null) {
+        final List<BadgeModel> newBadges =
+            await _badgeService.checkAndUpdateBadges(currentUser, plant);
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PlantItemScreen(
+                        plant: plant,
+                        profileImgBytes: widget.profileImgBytes,
+                      )));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            for (final badge in newBadges) {
+              _badgeService.showBadgeEarnedDialog(context, badge);
+            }
+          });
+        }
       }
+
+      if (!mounted) return;
+      _isLoading.value = false;
     } else {
       _loadingMessage.value = "Error processing image. Please try again.";
       await Future.delayed(const Duration(seconds: 2));
