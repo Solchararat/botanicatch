@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/models/user_model.dart';
+import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/modals/edit_profile_modal.dart';
@@ -9,6 +11,7 @@ import 'package:botanicatch/widgets/profile/achievement_badges.dart';
 import 'package:botanicatch/widgets/cards/activity_item.dart';
 import 'package:botanicatch/widgets/profile/profile_header.dart';
 import 'package:botanicatch/widgets/profile/section_title.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +28,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ValueNotifier<Uint8List?> _bannerImgBytes;
   late UserModel? _user;
+  late Stream<List<QueryDocumentSnapshot>> _plantsStream;
 
   @override
   void initState() {
@@ -42,11 +46,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _user = Provider.of<UserModel?>(context);
-  }
-
-  // mock function for generating last activities
-  List<Widget> _fetchLastActivities() {
-    return List.generate(3, (_) => const ActivityItem());
+    if (_user != null && _user!.uid != null) {
+      final databaseService = DatabaseService(uid: _user!.uid!);
+      _plantsStream = databaseService.plantsStream;
+    }
   }
 
   @override
@@ -110,10 +113,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const Divider(thickness: 0.5, height: 0.5),
                     const AchievementBadges(),
                     const Divider(thickness: 0.5, height: 0.5),
-                    const ProfileSectionTitle(title: "Last Activities"),
-                    Column(
-                      children: _fetchLastActivities(),
-                    )
+                    const ProfileSectionTitle(title: "Recent Catches"),
+                    StreamBuilder<List<QueryDocumentSnapshot>>(
+                      stream: _plantsStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final plants = snapshot.data!
+                              .take(3)
+                              .map((doc) => PlantModel.fromJson(
+                                  doc.data() as Map<String, dynamic>))
+                              .toList();
+                          return Column(
+                            children: plants
+                                .map((plant) => ActivityItem(plant: plant))
+                                .toList(),
+                          );
+                        }
+                        return const CircularProgressIndicator(
+                            color: kGreenColor300);
+                      },
+                    ),
+                    const SizedBox(height: 100)
                   ],
                 ),
               ),
