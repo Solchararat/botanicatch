@@ -154,7 +154,7 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.green.shade900.withValues(alpha: 0.9),
+      color: Colors.green.shade900,
       child: SafeArea(
         child: Center(
           child: Column(
