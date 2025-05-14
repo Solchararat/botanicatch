@@ -2,6 +2,7 @@ import 'package:botanicatch/services/shared_preferences/shared_preferences_servi
 import 'package:botanicatch/screens/auth/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:botanicatch/models/user_model.dart';
 import 'package:botanicatch/screens/auth/start_screen.dart';
@@ -10,12 +11,33 @@ import 'package:botanicatch/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const List<String> svgAssets = <String>[
+    "assets/images/badge.svg",
+    "assets/images/botanicatch.svg",
+    "assets/images/diagnose-plant.svg",
+    "assets/images/first-leaf-badge.svg",
+    "assets/images/found-plant.svg",
+    "assets/images/leaf-collector-badge.svg",
+    "assets/images/native-botanist-badge.svg",
+    "assets/images/new-plants.svg",
+    "assets/images/plantdex-apprentice-badge.svg",
+    "assets/images/settings.svg",
+    "assets/images/your-plants.svg",
+  ];
+
   await Future.wait([
     Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     ),
     SharedPrefsService.instance.init(),
+    ...svgAssets.map((path) {
+      final loader = SvgAssetLoader(path);
+      final key = loader.cacheKey(null);
+      return svg.cache.putIfAbsent(key, () => loader.loadBytes(null));
+    }),
   ]);
+
   runApp(const App());
 }
 
