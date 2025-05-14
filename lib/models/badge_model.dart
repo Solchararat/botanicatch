@@ -20,7 +20,7 @@ class BadgeModel {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       description: json['description'] ?? '',
-      assetPath: json['asset_path'] ?? '',
+      assetPath: json['asset_path'] ?? 'assets/images/badge.svg',
       unlockedAssetPath: json['unlocked_asset_path'] ?? '',
       isUnlocked: json['is_unlocked'] ?? false,
     );
