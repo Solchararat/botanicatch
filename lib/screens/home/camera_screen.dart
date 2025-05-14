@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui';
 import 'dart:io';
 import 'package:botanicatch/models/plant_model.dart';
 import 'package:botanicatch/screens/home/plant_item_screen.dart';
@@ -10,6 +9,7 @@ import 'package:botanicatch/services/db/db_service.dart';
 import 'package:botanicatch/services/storage/storage_service.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
+import 'package:botanicatch/widgets/camera/camera_dock.dart';
 import 'package:botanicatch/widgets/progress-indicators/botanicatch_loading.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +31,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  // FIXME: Camera doesn't load on release builds
   late CameraController _controller;
   late Future<void> _initializeFuture;
   late ValueNotifier<bool> _isInitialized;
@@ -40,7 +41,7 @@ class _CameraScreenState extends State<CameraScreen> {
   late ValueNotifier<bool> _isLoading;
   late ValueNotifier<String> _loadingMessage;
 
-  static const String _endpointURL = "http://192.168.100.42:8000/classify";
+  static const String _endpointURL = "http://192.168.100.42:8080/classify";
   static final ClassificationService _classificationService =
       ClassificationService(endpointUrl: _endpointURL);
   static final StorageService _storageService = StorageService.instance;
@@ -50,6 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeFuture = _initializeCamera();
     _isInitialized = ValueNotifier<bool>(false);
     _hasError = ValueNotifier<bool>(false);
     _isFlashOn = ValueNotifier<bool>(false);
@@ -59,7 +61,6 @@ class _CameraScreenState extends State<CameraScreen> {
     _isLoading = ValueNotifier<bool>(false);
 
     _capturedImage = ValueNotifier<XFile?>(null);
-    _initializeFuture = _initializeCamera();
   }
 
   @override
@@ -82,81 +83,87 @@ class _CameraScreenState extends State<CameraScreen> {
       final XFile picture = await _controller.takePicture();
       _capturedImage.value = picture;
 
-      _loadingMessage.value = "Processing image...";
-      final String base64Image = await compute(_encodeImg, picture.path);
-
-      _loadingMessage.value = "Identifying plant species...";
-      final response = await _classificationService.processClassification(
-          base64Image: base64Image);
-
-      if (response != null && response.statusCode == 200) {
-        _loadingMessage.value = "Classification complete! Preparing data...";
-        final newData = jsonDecode(response.body);
-        final plant = PlantModel.fromJson(newData);
-
-        _loadingMessage.value = "Uploading image...";
-        final String imagePath =
-            "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg";
-
-        await _storageService.uploadFile(imagePath, picture);
-
-        _loadingMessage.value = "Finalizing...";
-        final String imageUrl = await _storageService.getDownloadURL(imagePath);
-        plant.imageURL = imageUrl;
-
-        await _databaseService.addPlantData(plant);
-        _isLoading.value = false;
-
-        if (mounted) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PlantItemScreen(
-                        plant: plant,
-                        profileImgBytes: widget.profileImgBytes,
-                      )));
-        }
-      } else {
-        _loadingMessage.value = "Error processing image. Please try again.";
-        await Future.delayed(const Duration(seconds: 2));
-        _isLoading.value = false;
-      }
+      await _processImage(picture);
     } catch (e) {
-      debugPrint('Error capturing image: $e');
+      log('Error capturing image: $e');
+    }
+  }
+
+  Future<void> _processImage(XFile picture) async {
+    _loadingMessage.value = "Processing image...";
+    final String base64Image = await compute(_encodeImg, picture.path);
+
+    _loadingMessage.value = "Identifying plant species...";
+    final response = await _classificationService.processClassification(
+        base64Image: base64Image);
+
+    if (response != null && response.statusCode == 200) {
+      _loadingMessage.value = "Classification complete! Preparing data...";
+      final newData = jsonDecode(response.body);
+      final plant = PlantModel.fromJson(newData);
+
+      // TODO: Add exception handling when Gemini failed to send a valid JSON response
+
+      _loadingMessage.value = "Uploading image...";
+      final String imagePath =
+          "users/${_uid!}/plants/${plant.plantId}-${plant.scientificName}.jpg";
+
+      await _storageService.uploadFile(imagePath, picture);
+
+      _loadingMessage.value = "Finalizing...";
+      final String imageUrl = await _storageService.getDownloadURL(imagePath);
+      plant.imageURL = imageUrl;
+
+      await _databaseService.addPlantData(plant);
+      _isLoading.value = false;
+
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PlantItemScreen(
+                      plant: plant,
+                      profileImgBytes: widget.profileImgBytes,
+                    )));
+      }
+    } else {
+      _loadingMessage.value = "Error processing image. Please try again.";
+      await Future.delayed(const Duration(seconds: 2));
+      _isLoading.value = false;
     }
   }
 
   Future<void> _initializeCamera() async {
     try {
+      log('Starting camera initialization');
+
+      log('Requesting available cameras');
       final cameras = await availableCameras();
+      log('Found ${cameras.length} cameras');
 
       if (cameras.isEmpty) {
+        log('No cameras found on device');
         throw Exception('No cameras found on this device.');
       }
 
       final firstCamera = cameras.first;
+      log('Setting up controller for camera: ${firstCamera.name}');
+
       _controller = CameraController(
         firstCamera,
         ResolutionPreset.max,
         enableAudio: false,
       );
 
+      log('Initializing camera controller');
       await _controller.initialize();
+      log('Camera controller initialized successfully');
 
       if (!mounted) return;
-
       _isInitialized.value = true;
     } catch (e) {
-      if (e is CameraException && e.code == 'CameraAccessDenied') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Camera access denied.')),
-        );
-      } else {
-        debugPrint('Camera initialization error: $e');
-      }
-
+      log('Camera initialization error: $e');
       if (!mounted) return;
-
       _hasError.value = true;
     }
   }
@@ -165,11 +172,14 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const Expanded(
+        const SizedBox(
+            width: double.infinity,
+            height: double.infinity,
             child: BackgroundImage(imagePath: "assets/images/home-bg.jpg")),
         FutureBuilder<void>(
           future: _initializeFuture,
           builder: (context, snapshot) {
+            log('FutureBuilder state: ${snapshot.connectionState}');
             if (snapshot.connectionState == ConnectionState.done) {
               if (_hasError.value) {
                 return Center(
@@ -206,7 +216,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         child: Transform(
                           alignment: Alignment.center,
                           transform:
-                              Matrix4.diagonal3Values(xScale - 1, yScale, 1),
+                              Matrix4.diagonal3Values(xScale - 1.5, yScale, 1),
                           child: CameraPreview(_controller),
                         ),
                       ),
@@ -233,87 +243,10 @@ class _CameraScreenState extends State<CameraScreen> {
                               );
                             }),
                       ),
-                      RepaintBoundary(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                  sigmaX: 1.5,
-                                  sigmaY: 1.5,
-                                  tileMode: TileMode.decal),
-                              child: Container(
-                                height: 230,
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.4),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    ValueListenableBuilder<bool>(
-                                      valueListenable: _isLoading,
-                                      builder: (_, isLoading, __) {
-                                        return InkWell(
-                                          onTap:
-                                              isLoading ? null : _takePicture,
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 100),
-                                            width: 60,
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                              color: Colors.transparent,
-                                              border: Border.all(
-                                                color: isLoading
-                                                    ? Colors.grey
-                                                    : Colors.white,
-                                                width: 5,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    Positioned(
-                                      left: 16,
-                                      child: ValueListenableBuilder<XFile?>(
-                                        valueListenable: _capturedImage,
-                                        builder: (context, image, _) {
-                                          if (image == null) {
-                                            return const SizedBox.shrink();
-                                          }
-                                          return Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 100),
-                                            width: 60,
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2),
-                                            ),
-                                            child: ClipOval(
-                                              child: Image.file(
-                                                File(image.path),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      CameraDock(
+                          isLoading: _isLoading,
+                          capturedImage: _capturedImage,
+                          onTakePicture: _takePicture),
                       ValueListenableBuilder<bool>(
                         valueListenable: _isLoading,
                         builder: (_, isLoading, __) => isLoading
