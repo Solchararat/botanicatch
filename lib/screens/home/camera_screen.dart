@@ -103,6 +103,9 @@ class _CameraScreenState extends State<CameraScreen> {
       final plant = PlantModel.fromJson(newData);
 
       // TODO: Add exception handling when Gemini failed to send a valid JSON response
+      if (plant.commonName.isEmpty || plant.scientificName.isEmpty) {
+        throw Exception("ERROR: Gemini returned an invalid JSON format");
+      }
 
       _loadingMessage.value = "Uploading image...";
       final String imagePath =
