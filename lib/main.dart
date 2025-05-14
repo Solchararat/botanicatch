@@ -1,4 +1,5 @@
 import 'package:botanicatch/services/shared_preferences/shared_preferences_service.dart';
+import 'package:botanicatch/screens/auth/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,9 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(const AssetImage("assets/images/bg.png"), context);
+    precacheImage(const AssetImage("assets/images/home-bg.jpg"), context);
+
     return MultiProvider(
       providers: [
         StreamProvider<UserModel?>.value(
@@ -32,8 +36,39 @@ class App extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: StartScreen(),
+        home: SplashWrapper(),
       ),
     );
+  }
+}
+
+class SplashWrapper extends StatefulWidget {
+  const SplashWrapper({super.key});
+
+  @override
+  State<SplashWrapper> createState() => _SplashWrapperState();
+}
+
+class _SplashWrapperState extends State<SplashWrapper> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  bool _showOnboarding = true;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showOnboarding) {
+      return OnboardingScreen(
+        onComplete: () {
+          setState(() {
+            _showOnboarding = false;
+          });
+        },
+      );
+    } else {
+      return const StartScreen();
+    }
   }
 }
