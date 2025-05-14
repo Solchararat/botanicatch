@@ -226,8 +226,9 @@ class PlantItemScreen extends StatelessWidget {
                     Text("Type:",
                         style: kSmallTextStyle.copyWith(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    Row(
+                    Wrap(
                       spacing: 8,
+                      runSpacing: 8,
                       children: _formatPlantType(),
                     )
                   ],
