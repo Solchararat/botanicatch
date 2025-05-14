@@ -23,12 +23,28 @@ class GardenScreen extends StatefulWidget {
 class _GardenScreenState extends State<GardenScreen> {
   late Stream<List<QueryDocumentSnapshot>> _plantsStream;
   UserModel? _user;
+  List<QueryDocumentSnapshot> _allPlants = [];
+  List<QueryDocumentSnapshot> _filteredPlants = [];
+  final TextEditingController _searchController = TextEditingController();
 
   final double _logoHeight = 45.0;
   final double _profilePicSize = 50.0;
   final double _verticalSpacing = 16.0;
   final double _horizontalPadding = 8.0;
   final double _searchBarHeightEstimate = 50.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
@@ -38,6 +54,28 @@ class _GardenScreenState extends State<GardenScreen> {
       _plantsStream = databaseService.plantsStreamAscending;
     }
     super.didChangeDependencies();
+  }
+
+  void _onSearchChanged() {
+    _filterPlants(_searchController.text);
+  }
+
+  void _filterPlants(String searchTerm) {
+    setState(() {
+      if (searchTerm.isEmpty) {
+        _filteredPlants = List.from(_allPlants);
+      } else {
+        _filteredPlants = _allPlants.where((doc) {
+          final plant = PlantModel.fromJson(doc.data() as Map<String, dynamic>);
+          return plant.commonName
+                  .toLowerCase()
+                  .contains(searchTerm.toLowerCase()) ||
+              plant.scientificName
+                  .toLowerCase()
+                  .contains(searchTerm.toLowerCase());
+        }).toList();
+      }
+    });
   }
 
   Widget _buildItem(
@@ -66,11 +104,17 @@ class _GardenScreenState extends State<GardenScreen> {
                     color: kGreenColor300,
                   ));
                 }
-                final plants = snapshot.data!;
+
+                _allPlants = snapshot.data!;
+
+                if (_filteredPlants.isEmpty) {
+                  _filteredPlants = List.from(_allPlants);
+                }
+
                 if (orientation == Orientation.landscape) {
-                  return _buildLandscapeLayout(plants);
+                  return _buildLandscapeLayout(_filteredPlants);
                 } else {
-                  return _buildPortraitLayout(plants);
+                  return _buildPortraitLayout(_filteredPlants);
                 }
               },
             );
@@ -102,32 +146,55 @@ class _GardenScreenState extends State<GardenScreen> {
             ],
           ),
           SizedBox(height: _verticalSpacing),
-          // TODO: Add search implementation
-          TextFormField(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search, color: kGreenColor300),
-              hintText: "Search Plant",
-              contentPadding: const EdgeInsets.all(12),
-              hintStyle: kXXSmallTextStyle.copyWith(color: kGreenColor300),
-              border: kGardenOutlineInputBorder,
-              enabledBorder: kGardenOutlineInputBorder,
-              focusedBorder: kGardenOutlineInputBorder,
-              errorBorder: kGardenOutlineInputBorder,
-              focusedErrorBorder: kGardenOutlineInputBorder,
+          TextSelectionTheme(
+            data: const TextSelectionThemeData(
+              selectionHandleColor: kGreenColor300,
+              cursorColor: kGreenColor300,
+            ),
+            child: TextFormField(
+              style: kSmallTextStyle,
+              controller: _searchController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search, color: kGreenColor300),
+                hintText: "Search Plant",
+                contentPadding: const EdgeInsets.all(12),
+                hintStyle: kXXSmallTextStyle.copyWith(color: kGreenColor300),
+                border: kGardenOutlineInputBorder,
+                enabledBorder: kGardenOutlineInputBorder,
+                focusedBorder: kGardenOutlineInputBorder,
+                errorBorder: kGardenOutlineInputBorder,
+                focusedErrorBorder: kGardenOutlineInputBorder,
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: kGreenColor300),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
+              ),
             ),
           ),
           SizedBox(height: _verticalSpacing),
           Expanded(
-            child: GridView.builder(
-              itemCount: plants.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemBuilder: (context, index) =>
-                  _buildItem(context, index, plants[index]),
-            ),
+            child: plants.isEmpty
+                ? Center(
+                    child: Text(
+                      "No plants found",
+                      style: kSmallTextStyle.copyWith(color: kGreenColor300),
+                    ),
+                  )
+                : GridView.builder(
+                    itemCount: plants.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) =>
+                        _buildItem(context, index, plants[index]),
+                  ),
           ),
         ],
       ),
@@ -174,6 +241,7 @@ class _GardenScreenState extends State<GardenScreen> {
                   ),
                   SizedBox(height: _verticalSpacing),
                   TextFormField(
+                    controller: _searchController,
                     decoration: InputDecoration(
                       prefixIcon:
                           const Icon(Icons.search, color: kGreenColor300),
@@ -186,6 +254,15 @@ class _GardenScreenState extends State<GardenScreen> {
                       focusedBorder: kGardenOutlineInputBorder,
                       errorBorder: kGardenOutlineInputBorder,
                       focusedErrorBorder: kGardenOutlineInputBorder,
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear,
+                                  color: kGreenColor300),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                          : null,
                     ),
                   ),
                 ],
@@ -193,20 +270,29 @@ class _GardenScreenState extends State<GardenScreen> {
             ),
           ),
         ),
-        SliverPadding(
-          padding: EdgeInsets.all(_horizontalPadding),
-          sliver: SliverGrid.builder(
-            itemCount: plants.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              childAspectRatio: 1,
-            ),
-            itemBuilder: (context, index) =>
-                _buildItem(context, index, plants[index]),
-          ),
-        ),
+        plants.isEmpty
+            ? SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    "No plants found",
+                    style: kSmallTextStyle.copyWith(color: kGreenColor300),
+                  ),
+                ),
+              )
+            : SliverPadding(
+                padding: EdgeInsets.all(_horizontalPadding),
+                sliver: SliverGrid.builder(
+                  itemCount: plants.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 1,
+                  ),
+                  itemBuilder: (context, index) =>
+                      _buildItem(context, index, plants[index]),
+                ),
+              ),
       ],
     );
   }
