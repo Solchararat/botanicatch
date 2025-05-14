@@ -3,6 +3,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -20,10 +21,9 @@ class StartScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 16,
             children: [
-              Image.asset(
-                "assets/images/logo.png",
-                cacheWidth: 600,
-                cacheHeight: 150,
+              SvgPicture.asset(
+                "assets/images/botanicatch.svg",
+                height: 150,
               ),
               // SizedBox was necessary to resize the TextButton
               SizedBox(
