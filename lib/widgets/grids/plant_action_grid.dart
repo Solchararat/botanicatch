@@ -18,10 +18,14 @@ class PlantActionGrid extends StatelessWidget {
       spacing: 16,
       children: [
         Row(
+          spacing: 16,
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [topLeftWidget, topRightWidget],
         ),
         Row(
+          spacing: 16,
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [bottomLeftWidget, bottomRightWidget],
         )

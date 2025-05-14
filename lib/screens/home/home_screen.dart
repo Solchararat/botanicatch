@@ -27,146 +27,151 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     UserModel? user = Provider.of<UserModel?>(context);
 
-    return BackgroundImage(
-      imagePath: "assets/images/home-bg.jpg",
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 45),
-                  SvgPicture.asset(
-                    "assets/images/botanicatch.svg",
-                    height: 45,
+    return SingleChildScrollView(
+      child: BackgroundImage(
+        imagePath: "assets/images/home-bg.jpg",
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 45),
+                    SvgPicture.asset(
+                      "assets/images/botanicatch.svg",
+                      height: 45,
+                    ),
+                    ProfilePicture(
+                      profileImgBytes: profileImgBytes,
+                      width: 50,
+                      height: 50,
+                    )
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Hi ${user?.username}!",
+                      style:
+                          kLargeTextStyle.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Anything New?",
+                      style: kSmallTextStyle.copyWith(color: kGrayColor250),
+                      textAlign: TextAlign.left),
+                ),
+                const SizedBox(height: 16),
+                PlantActionGrid(
+                  topLeftWidget: PlantActionButton(
+                    onTap: () => onNavigate(2),
+                    imagePath: "assets/images/new-plants.svg",
+                    title: "New Plants",
+                    // TODO: Implement onTap feature
+                    mainColor: kGreenColor300,
+                    radialColor: kGreenColor500,
+                    right: -30,
+                    top: -10,
+                    cacheWidth: 90,
+                    cacheHeight: 90,
                   ),
-                  ProfilePicture(
-                    profileImgBytes: profileImgBytes,
-                    width: 50,
-                    height: 50,
-                  )
-                ],
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Hi ${user?.username}!",
-                    style:
-                        kLargeTextStyle.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Anything New?",
-                    style: kSmallTextStyle.copyWith(color: kGrayColor250),
-                    textAlign: TextAlign.left),
-              ),
-              const SizedBox(height: 16),
-              PlantActionGrid(
-                topLeftWidget: PlantActionButton(
-                  onTap: () => onNavigate(2),
-                  imagePath: "assets/images/new-plants.svg",
-                  title: "New Plants",
-                  // TODO: Implement onTap feature
-                  mainColor: kGreenColor300,
-                  radialColor: kGreenColor500,
-                  right: -30,
-                  top: -10,
-                  cacheWidth: 90,
-                  cacheHeight: 90,
-                ),
-                topRightWidget: PlantActionButton(
-                  // TODO: Implement onTap feature
-                  onTap: () => onNavigate(3),
-                  imagePath: "assets/images/your-plants.svg",
-                  title: "Your Plants",
-                  mainColor: kGreenColor300,
-                  radialColor: kGreenColor500,
-                  right: -25,
-                  top: -25,
-                  cacheWidth: 100,
-                  cacheHeight: 100,
-                ),
-                bottomLeftWidget: PlantActionButton(
-                  // TODO: Implement onTap feature
-                  onTap: () => onNavigate(4),
-                  imagePath: "assets/images/location.svg",
-                  title: "Location",
-                  mainColor: kBlueColor100,
-                  radialColor: kBlueColor200,
-                  right: -15,
-                  top: -25,
-                  cacheWidth: 90,
-                  cacheHeight: 90,
-                ),
-                bottomRightWidget: PlantActionButton(
-                  // TODO: Implement onTap feature
-                  onTap: () {},
-                  imagePath: "assets/images/settings.svg",
-                  title: "Updates",
-                  mainColor: kBlueColor100,
-                  radialColor: kBlueColor200,
-                  right: -15,
-                  top: -25,
-                  cacheWidth: 100,
-                  cacheHeight: 100,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  PlantStatsButton(
+                  topRightWidget: PlantActionButton(
+                    // TODO: Implement onTap feature
+                    onTap: () => onNavigate(3),
+                    imagePath: "assets/images/your-plants.svg",
+                    title: "Your Plants",
+                    mainColor: kGreenColor300,
+                    radialColor: kGreenColor500,
+                    right: -25,
+                    top: -25,
+                    cacheWidth: 100,
+                    cacheHeight: 100,
+                  ),
+                  bottomLeftWidget: PlantActionButton(
+                    // TODO: Implement onTap feature
+                    onTap: () => onNavigate(4),
+                    imagePath: "assets/images/location.svg",
+                    title: "Location",
+                    mainColor: kBlueColor100,
+                    radialColor: kBlueColor200,
+                    right: -15,
+                    top: -25,
+                    cacheWidth: 90,
+                    cacheHeight: 90,
+                  ),
+                  bottomRightWidget: PlantActionButton(
                     // TODO: Implement onTap feature
                     onTap: () {},
-                    useDynamicSubheading: true,
-                    dynamicSubheadingTemplate: "{count} new plants recently",
-                    subheading: "",
-                    heading: "You found:",
-                    imagePath: "assets/images/found-plant.svg",
-                    cacheWidth: 150,
-                    cacheHeight: 150,
-                    right: -40,
-                    bottom: -40,
+                    imagePath: "assets/images/settings.svg",
+                    title: "Updates",
+                    mainColor: kBlueColor100,
+                    radialColor: kBlueColor200,
+                    right: -15,
+                    top: -25,
+                    cacheWidth: 100,
+                    cacheHeight: 100,
                   ),
-                  PlantStatsButton(
-                    // TODO: Implement onTap feature
-                    onTap: () {},
-                    useDynamicSubheading: false,
-                    subheading: "Check your plant's health",
-                    heading: "Diagnose",
-                    imagePath: "assets/images/diagnose-plant.svg",
-                    cacheWidth: 160,
-                    cacheHeight: 160,
-                    right: -50,
-                    bottom: -50,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "You are now logged in!",
-                    style: kSmallTextStyle,
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        _auth.signOut();
-                      },
-                      child: Text(
-                        "Log Out",
-                        style: kSmallTextStyle.copyWith(color: kGreenColor300),
-                      ))
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 16,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    PlantStatsButton(
+                      // TODO: Implement onTap feature
+                      onTap: () {},
+                      useDynamicSubheading: true,
+                      dynamicSubheadingTemplate: "{count} new plants recently",
+                      subheading: "",
+                      heading: "You found:",
+                      imagePath: "assets/images/found-plant.svg",
+                      cacheWidth: 150,
+                      cacheHeight: 150,
+                      right: -40,
+                      bottom: -40,
+                    ),
+                    PlantStatsButton(
+                      // TODO: Implement onTap feature
+                      onTap: () {},
+                      useDynamicSubheading: false,
+                      subheading: "Check your plant's health",
+                      heading: "Diagnose",
+                      imagePath: "assets/images/diagnose-plant.svg",
+                      cacheWidth: 160,
+                      cacheHeight: 160,
+                      right: -50,
+                      bottom: -50,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 64),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "You are now logged in!",
+                      style: kSmallTextStyle,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          _auth.signOut();
+                        },
+                        child: Text(
+                          "Log Out",
+                          style:
+                              kSmallTextStyle.copyWith(color: kGreenColor300),
+                        ))
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
