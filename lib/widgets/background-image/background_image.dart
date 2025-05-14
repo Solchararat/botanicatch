@@ -24,6 +24,9 @@ class BackgroundImage extends StatelessWidget {
           image: AssetImage(imagePath),
           fit: BoxFit.cover,
           opacity: opacity ?? 1,
+          onError: (exception, stackTrace) {
+            debugPrint('Error loading image: $exception');
+          },
         ),
       ),
       child: child,
