@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/utils/constants.dart';
 
@@ -154,96 +155,119 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.green.shade900,
-      child: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 80,
-                width: 80,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    RotationTransition(
-                      turns: _leafController,
-                      child: const Icon(
-                        Icons.eco,
-                        size: 48,
-                        color: kGreenColor300,
-                      ),
+      color: Colors.transparent,
+      child: BackgroundImage(
+        imagePath: "assets/images/home-bg.jpg",
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: RepaintBoundary(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        RotationTransition(
+                          turns: _leafController,
+                          child: const Icon(
+                            Icons.eco,
+                            size: 48,
+                            color: kGreenColor300,
+                          ),
+                        ),
+                        RotationTransition(
+                          turns: Tween<double>(begin: 0, end: -1)
+                              .animate(_searchController),
+                          child: const Icon(
+                            Icons.search,
+                            size: 48,
+                            color: kGreenColor100,
+                          ),
+                        ),
+                      ],
                     ),
-                    RotationTransition(
-                      turns: Tween<double>(begin: 0, end: -1)
-                          .animate(_searchController),
-                      child: const Icon(
-                        Icons.search,
-                        size: 48,
-                        color: kGreenColor100,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                "BOTANICATCH",
-                style: kSmallTextStyle.copyWith(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: ValueListenableBuilder<double>(
-                  valueListenable: _progress,
-                  builder: (context, progress, _) {
-                    return widget.duration == null
-                        ? const LinearProgressIndicator(
-                            backgroundColor: Colors.green,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(kGreenColor300),
-                            minHeight: 8,
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: LinearProgressIndicator(
-                              value: progress,
-                              backgroundColor: Colors.green.shade900,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  kGreenColor300),
-                              minHeight: 8,
-                            ),
-                          );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  _currentMessage,
-                  key: ValueKey<String>(_currentMessage),
-                  style: TextStyle(
-                    color: Colors.green.shade100,
-                    fontSize: 16,
                   ),
                 ),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  5,
-                  (index) => _AnimatedDot(
-                    delay: index * 0.1,
+                const SizedBox(height: 24),
+                Text(
+                  "BOTANICATCH",
+                  style: kSmallTextStyle.copyWith(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: ValueListenableBuilder<double>(
+                    valueListenable: _progress,
+                    builder: (context, progress, _) {
+                      return widget.duration == null
+                          ? const RepaintBoundary(
+                              child: LinearProgressIndicator(
+                                backgroundColor: Colors.green,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    kGreenColor300),
+                                minHeight: 8,
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: RepaintBoundary(
+                                child: LinearProgressIndicator(
+                                  value: progress,
+                                  backgroundColor: Colors.green.shade900,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                          kGreenColor300),
+                                  minHeight: 8,
+                                ),
+                              ),
+                            );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 20,
+                  width: 400,
+                  child: RepaintBoundary(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Text(
+                        _currentMessage,
+                        key: ValueKey<String>(_currentMessage),
+                        style: TextStyle(
+                          color: Colors.green.shade100,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  height: 20,
+                  width: 60,
+                  child: RepaintBoundary(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        5,
+                        (index) => _AnimatedDot(
+                          delay: index * 0.1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
