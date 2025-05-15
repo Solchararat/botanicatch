@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/utils/constants.dart';
+import 'dart:developer' as dev;
 
 class BotanicatchLoading extends StatefulWidget {
   final VoidCallback? onComplete;
@@ -28,6 +29,9 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
   late AnimationController _progressController;
   late Animation<double> _progressAnimation;
 
+  final ValueNotifier<double> _progress = ValueNotifier<double>(0);
+  late final ValueNotifier<String> _messageNotifier;
+
   final List<String> _messages = [
     "Identifying plant species...",
     "Analyzing leaf patterns...",
@@ -35,8 +39,6 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
     "Almost there...",
   ];
 
-  late String _currentMessage;
-  final ValueNotifier<double> _progress = ValueNotifier<double>(0);
   Timer? _messageTimer;
   Timer? _progressTimer;
   Timer? _completionTimer;
@@ -44,7 +46,7 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
   @override
   void initState() {
     super.initState();
-    _currentMessage = widget.initialMessage;
+    _messageNotifier = ValueNotifier(widget.initialMessage);
 
     _leafController = AnimationController(
       vsync: this,
@@ -78,7 +80,7 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
     final duration = widget.duration!;
     _progressTimer = Timer.periodic(
       Duration(milliseconds: duration ~/ 100),
-      (timer) {
+      (_) {
         final newProgress = _progress.value + 0.01;
         _progress.value = newProgress <= 1.0 ? newProgress : 1.0;
       },
@@ -89,42 +91,36 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
     final duration = widget.duration!;
     _messageTimer = Timer.periodic(
       Duration(milliseconds: duration ~/ 4),
-      (timer) {
-        _updateRandomMessage();
-      },
+      (_) => _updateRandomMessage(),
     );
   }
 
   void _setupOnlyMessageTimer() {
     _messageTimer = Timer.periodic(
       const Duration(milliseconds: 2500),
-      (timer) {
-        _updateRandomMessage();
-      },
+      (_) => _updateRandomMessage(),
     );
   }
 
   void _updateRandomMessage() {
-    if (mounted) {
-      setState(() {
-        if (widget.initialMessage != _currentMessage &&
-            !_messages.contains(widget.initialMessage)) {
-          _currentMessage = widget.initialMessage;
-        } else {
-          final randomIndex = Random().nextInt(_messages.length);
-          _currentMessage = _messages[randomIndex];
-        }
-      });
+    if (!mounted) return;
+
+    final current = _messageNotifier.value;
+    String next;
+    if (widget.initialMessage != current &&
+        !_messages.contains(widget.initialMessage)) {
+      next = widget.initialMessage;
+    } else {
+      next = _messages[Random().nextInt(_messages.length)];
     }
+    _messageNotifier.value = next;
   }
 
   void _setupCompletionTimer() {
     _completionTimer = Timer(
       Duration(milliseconds: widget.duration!),
       () {
-        if (widget.onComplete != null) {
-          widget.onComplete!();
-        }
+        widget.onComplete?.call();
       },
     );
   }
@@ -132,11 +128,8 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
   @override
   void didUpdateWidget(BotanicatchLoading oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.initialMessage != oldWidget.initialMessage) {
-      setState(() {
-        _currentMessage = widget.initialMessage;
-      });
+      _messageNotifier.value = widget.initialMessage;
     }
   }
 
@@ -146,6 +139,7 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
     _searchController.dispose();
     _progressController.dispose();
     _progress.dispose();
+    _messageNotifier.dispose();
     _messageTimer?.cancel();
     _progressTimer?.cancel();
     _completionTimer?.cancel();
@@ -154,10 +148,12 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
 
   @override
   Widget build(BuildContext context) {
+    dev.log('rebuilt!');
+
     return Container(
       color: Colors.transparent,
       child: BackgroundImage(
-        imagePath: "assets/images/home-bg.jpg",
+        imagePath: 'assets/images/home-bg.jpg',
         child: SafeArea(
           child: Center(
             child: Column(
@@ -193,7 +189,7 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  "BOTANICATCH",
+                  'BOTANICATCH',
                   style: kSmallTextStyle.copyWith(
                     color: Colors.white,
                     fontSize: 24,
@@ -233,19 +229,24 @@ class _BotanicatchLoadingState extends State<BotanicatchLoading>
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 20,
+                  height: 25,
                   width: 400,
                   child: RepaintBoundary(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: Text(
-                        _currentMessage,
-                        key: ValueKey<String>(_currentMessage),
-                        style: TextStyle(
-                          color: Colors.green.shade100,
-                          fontSize: 16,
-                        ),
-                      ),
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _messageNotifier,
+                      builder: (context, message, _) {
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Text(
+                            message,
+                            key: ValueKey<String>(message),
+                            style: TextStyle(
+                              color: Colors.green.shade100,
+                              fontSize: 16,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
