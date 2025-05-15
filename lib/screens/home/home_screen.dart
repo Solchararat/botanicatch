@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   bottomRightWidget: PlantActionButton(
                     // TODO: Implement onTap feature
-                    onTap: () {},
+                    onTap: () => onNavigate(5),
                     imagePath: "assets/images/settings.svg",
                     title: "Updates",
                     mainColor: kBlueColor100,
@@ -117,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                     cacheHeight: 100,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   spacing: 16,
@@ -150,26 +150,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 64),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "You are now logged in!",
-                      style: kSmallTextStyle,
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          _auth.signOut();
-                        },
-                        child: Text(
-                          "Log Out",
-                          style:
-                              kSmallTextStyle.copyWith(color: kGreenColor300),
-                        ))
-                  ],
-                ),
+                const SizedBox(height: 150),
               ],
             ),
           ),

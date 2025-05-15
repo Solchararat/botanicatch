@@ -6,6 +6,7 @@ import 'package:botanicatch/screens/home/garden_screen.dart';
 import 'package:botanicatch/screens/home/home_screen.dart';
 import 'package:botanicatch/screens/home/maps_screen.dart';
 import 'package:botanicatch/screens/home/profile_screen.dart';
+import 'package:botanicatch/screens/home/settings_screen.dart';
 import 'package:botanicatch/widgets/buttons/camera_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:botanicatch/widgets/navbars/custom_bottom_navbar.dart';
@@ -56,6 +57,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       CameraScreen(profileImgBytes: _profileImgBytes),
       GardenScreen(profileImgBytes: _profileImgBytes),
       const MapsScreen(),
+      SettingsScreen(onNavigate: _navigateOnPress),
     ];
   }
 
