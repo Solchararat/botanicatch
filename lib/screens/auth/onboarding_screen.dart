@@ -74,6 +74,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                         const SizedBox(width: 8),
                         Container(
+                          width: 30,
+                          height: 30,
                           padding: const EdgeInsets.all(2),
                           decoration: BoxDecoration(
                             color: Colors.green.shade300,
@@ -82,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           child: const Icon(
                             Icons.eco_outlined,
                             color: Colors.white,
-                            size: 16,
+                            size: 24,
                           ),
                         ),
                       ],
