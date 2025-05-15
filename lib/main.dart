@@ -25,7 +25,6 @@ void main() async {
     "assets/images/settings.svg",
     "assets/images/your-plants.svg",
   ];
-
   await Future.wait([
     Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -58,7 +57,10 @@ class App extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashWrapper(),
+        home: Scaffold(
+          extendBody: true,
+          body: SplashWrapper(),
+        ),
       ),
     );
   }

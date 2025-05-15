@@ -1,3 +1,4 @@
+import 'package:botanicatch/screens/home/privacy_policy_screen.dart';
 import 'package:botanicatch/screens/home/user_manual_screen.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/widgets/background-image/background_image.dart';
@@ -107,7 +108,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onTap: () {
-                      //   TODO: add onpress
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const PrivacyPolicyScreen()));
                     },
                   ),
                 ),
