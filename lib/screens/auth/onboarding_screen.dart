@@ -46,10 +46,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       backgroundColor: const Color(0xFF004000),
       body: BackgroundImage(
         imagePath: "assets/images/home-bg.jpg",
         child: SafeArea(
+          bottom: false,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: double.infinity),
             child: SingleChildScrollView(
