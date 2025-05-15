@@ -203,7 +203,7 @@ class UserManualScreen extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: Colors.white,
+              color: kGreenColor100,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
