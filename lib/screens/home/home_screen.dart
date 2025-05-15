@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:botanicatch/models/user_model.dart';
-import 'package:botanicatch/screens/home/camera_screen.dart';
-import 'package:botanicatch/services/auth/auth_service.dart';
 import 'package:botanicatch/widgets/buttons/plant_action_button.dart';
 import 'package:botanicatch/widgets/buttons/plant_stats_button.dart';
 import 'package:botanicatch/widgets/grids/plant_action_grid.dart';
@@ -21,7 +19,6 @@ class HomeScreen extends StatelessWidget {
     required this.profileImgBytes,
     required this.onNavigate,
   });
-  static final AuthService _auth = AuthService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +69,6 @@ class HomeScreen extends StatelessWidget {
                     onTap: () => onNavigate(2),
                     imagePath: "assets/images/new-plants.svg",
                     title: "New Plants",
-                    // TODO: Implement onTap feature
                     mainColor: kGreenColor300,
                     radialColor: kGreenColor500,
                     right: -30,
@@ -81,7 +77,6 @@ class HomeScreen extends StatelessWidget {
                     cacheHeight: 90,
                   ),
                   topRightWidget: PlantActionButton(
-                    // TODO: Implement onTap feature
                     onTap: () => onNavigate(3),
                     imagePath: "assets/images/your-plants.svg",
                     title: "Your Plants",
@@ -93,7 +88,6 @@ class HomeScreen extends StatelessWidget {
                     cacheHeight: 100,
                   ),
                   bottomLeftWidget: PlantActionButton(
-                    // TODO: Implement onTap feature
                     onTap: () => onNavigate(4),
                     imagePath: "assets/images/location.svg",
                     title: "Location",
@@ -105,7 +99,6 @@ class HomeScreen extends StatelessWidget {
                     cacheHeight: 90,
                   ),
                   bottomRightWidget: PlantActionButton(
-                    // TODO: Implement onTap feature
                     onTap: () => onNavigate(5),
                     imagePath: "assets/images/settings.svg",
                     title: "Updates",
@@ -124,7 +117,6 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     PlantStatsButton(
-                      // TODO: Implement onTap feature
                       onTap: () {},
                       useDynamicSubheading: true,
                       dynamicSubheadingTemplate: "{count} new plants recently",
@@ -137,7 +129,6 @@ class HomeScreen extends StatelessWidget {
                       bottom: -40,
                     ),
                     PlantStatsButton(
-                      // TODO: Implement onTap feature
                       onTap: () => onNavigate(1),
                       useDynamicSubheading: false,
                       subheading: "Check your recent catches",
