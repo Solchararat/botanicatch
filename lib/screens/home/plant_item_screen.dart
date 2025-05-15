@@ -19,136 +19,66 @@ class PlantItemScreen extends StatelessWidget {
     required this.profileImgBytes,
   });
 
+  Widget _buildPlantTypeTag(String type) {
+    final Map<String, BoxDecoration> typeDecorations = {
+      "medicinal": medicinalType,
+      "ornamental": ornamentalType,
+      "edible": edibleType,
+      "poisonous": poisonousType,
+      "native": nativeType,
+      "invasive": invasiveType,
+      "tree": treeType,
+      "herb/shrub": herbType,
+      "aquatic": aquaticType,
+      "climber/vine": climberType,
+    };
+
+    final String displayText =
+        type.toLowerCase() == "climber/vine" ? "Vine" : type.capitalize();
+
+    return Container(
+      constraints: const BoxConstraints(minWidth: 80),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: typeDecorations[type.toLowerCase()] ?? defaultType,
+      child: Text(
+        displayText,
+        style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   List<Widget> _formatPlantType() {
-    return plant.type.map((type) {
-      switch (type.toLowerCase()) {
-        case "medicinal":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: medicinalType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+    return plant.type.map((type) => _buildPlantTypeTag(type)).toList();
+  }
+
+  Widget _buildPlantImage() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: CachedNetworkImage(
+          imageUrl: plant.imageURL,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(color: kGreenColor300)),
+          errorWidget: (context, url, error) => const Center(
+            child: Icon(
+              Icons.error,
+              color: kGreenColor500,
+              size: 64,
             ),
-          );
-        case "ornamental":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: ornamentalType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "edible":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: edibleType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "poisonous":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: poisonousType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "native":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: nativeType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "invasive":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: invasiveType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "tree":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: treeType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "herb/shrub":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: herbType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "aquatic":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: aquaticType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        case "climber/vine":
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: climberType,
-            child: Text(
-              "Vine",
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        default:
-          return Container(
-            width: 100,
-            padding: const EdgeInsets.all(8),
-            decoration: defaultType,
-            child: Text(
-              type.capitalize(),
-              style: kXXSmallTextStyle.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-      }
-    }).toList();
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+
     return Scaffold(
       body: BackgroundImage(
         imagePath: "assets/images/home-bg.jpg",
@@ -157,10 +87,10 @@ class PlantItemScreen extends StatelessWidget {
           left: false,
           right: false,
           child: Column(
-            spacing: 8,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -181,63 +111,175 @@ class PlantItemScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              CachedNetworkImage(
-                imageUrl: plant.imageURL,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(color: kGreenColor300),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.error,
-                  color: kGreenColor500,
-                ),
-              )
+              isLandscape ? const SizedBox.shrink() : _buildPlantImage()
             ],
           ),
         ),
       ),
-      bottomSheet: BottomSheet(
-        onClosing: () {},
-        builder: (context) => SizedBox(
-          height: 350,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(plant.commonName,
-                    style: kSmallTextStyle.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold)),
-                Text(plant.scientificName,
-                    style: kXXSmallTextStyle.copyWith(
-                        color: Colors.black, fontStyle: FontStyle.italic)),
-                const SizedBox(height: 16),
-                Text("Description",
-                    style: kSmallTextStyle.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16)),
-                Text(plant.description,
-                    style: kXXSmallTextStyle.copyWith(color: kGrayColor400)),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    Text("Type:",
-                        style: kSmallTextStyle.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.bold)),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: _formatPlantType(),
-                    )
-                  ],
+      bottomSheet: DraggableScrollableSheet(
+        initialChildSize: isLandscape ? 0.9 : 0.4,
+        minChildSize: isLandscape ? 0.5 : 0.2,
+        maxChildSize: isLandscape ? 0.9 : 0.8,
+        expand: false,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
                 ),
               ],
             ),
+            child: isLandscape
+                ? _buildLandscapeLayout(scrollController)
+                : _buildPortraitLayout(scrollController),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPortraitLayout(ScrollController scrollController) {
+    return ListView(
+      controller: scrollController,
+      padding: const EdgeInsets.all(16),
+      children: [
+        Center(
+          child: Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.only(bottom: 16),
           ),
         ),
-      ),
+        Text(
+          plant.commonName,
+          style: kSmallTextStyle.copyWith(
+              color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          plant.scientificName,
+          style: kXXSmallTextStyle.copyWith(
+              color: Colors.black, fontStyle: FontStyle.italic),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "Description",
+          style: kSmallTextStyle.copyWith(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        Text(
+          plant.description,
+          style: kXXSmallTextStyle.copyWith(color: kGrayColor400),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "Type:",
+          style: kSmallTextStyle.copyWith(
+              color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _formatPlantType(),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildLandscapeLayout(ScrollController scrollController) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: CachedNetworkImage(
+                imageUrl: plant.imageURL,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(color: kGreenColor300)),
+                errorWidget: (context, url, error) => const Center(
+                  child: Icon(
+                    Icons.error,
+                    color: kGreenColor500,
+                    size: 64,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.all(16),
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  margin: const EdgeInsets.only(bottom: 16),
+                ),
+              ),
+              Text(
+                plant.commonName,
+                style: kSmallTextStyle.copyWith(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                plant.scientificName,
+                style: kXXSmallTextStyle.copyWith(
+                    color: Colors.black, fontStyle: FontStyle.italic),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Description",
+                style: kSmallTextStyle.copyWith(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+              Text(
+                plant.description,
+                style: kXXSmallTextStyle.copyWith(color: kGrayColor400),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Type:",
+                style: kSmallTextStyle.copyWith(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _formatPlantType(),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
