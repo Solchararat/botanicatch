@@ -58,9 +58,10 @@ class BadgeService {
 
     final allPlants = await databaseService.getAllPlants();
 
-    final bool isUniquePlant = !allPlants.any((plant) =>
-        plant.scientificName == newPlant.scientificName &&
-        plant.plantId != newPlant.plantId);
+    final bool scientificNameAlreadyExists = allPlants
+        .any((plant) => plant.scientificName == newPlant.scientificName);
+
+    final bool isUniquePlant = !scientificNameAlreadyExists;
 
     if (isUniquePlant) {
       updatedStats['uniquePlantsDiscovered'] =
