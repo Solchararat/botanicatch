@@ -9,6 +9,7 @@ import 'package:botanicatch/widgets/background-image/background_image.dart';
 import 'package:botanicatch/widgets/textformfields/custom_textformfield.dart';
 import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function toggleView;
@@ -90,11 +91,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 16,
                       children: [
-                        Image.asset(
-                          "assets/images/logo.png",
-                          cacheWidth: 600,
-                          cacheHeight: 150,
-                        ),
+                        SvgPicture.asset("assets/images/botanicatch.svg"),
+
                         Column(
                           children: [
                             Text("SIGNUP",

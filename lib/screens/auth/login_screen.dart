@@ -10,6 +10,7 @@ import 'package:botanicatch/widgets/buttons/show_password_button.dart';
 import 'package:botanicatch/widgets/textformfields/custom_textformfield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function toggleView;
@@ -85,11 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            "assets/images/logo.png",
-                            cacheWidth: 600,
-                            cacheHeight: 150,
-                          ),
+                          SvgPicture.asset("assets/images/botanicatch.svg"),
+
                           Column(
                             children: [
                               Text("LOGIN",

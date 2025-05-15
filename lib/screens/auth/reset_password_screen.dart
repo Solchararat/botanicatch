@@ -7,6 +7,7 @@ import 'package:botanicatch/utils/constants.dart';
 import 'package:botanicatch/utils/extensions.dart';
 import 'package:botanicatch/widgets/buttons/auth_button.dart';
 import 'package:botanicatch/widgets/textformfields/custom_textformfield.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -66,7 +67,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 16,
                 children: [
-                  Image.asset("assets/images/logo.png"),
+                  SvgPicture.asset("assets/images/botanicatch.svg"),
                   Column(
                     children: [
                       Text("RESET PASSWORD",
